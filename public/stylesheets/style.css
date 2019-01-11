@@ -1,0 +1,52 @@
+/* 登录、注册 */
+.form-box-m {
+  margin-top: 20%;
+}
+.form-box-m .layui-input-block {
+  margin-left: 0;
+}
+.form-box-m .register-btn-m {
+  text-align: right;
+}
+.form-box-m .register-btn-m a {
+  color: #FF5722;
+}
+.login-title-icon {
+  text-align: center;
+  padding-bottom: 60px;
+  color: #009688;
+  font-weight: 700;
+}
+/* 商品添加 */
+.addGoods .imgList div {
+  margin-right: 10px;
+  margin-bottom: 10px;
+  width: 100px;
+  height: 100px;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+  position: relative;
+}
+.addGoods .imgList span {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  text-align: center;
+  background: #eee;
+  line-height: 24px;
+  cursor: pointer;
+}
+.addGoods .imgList span.masterImg {
+  cursor: default;
+}
+.layui-table-cell {
+  height: auto;
+  line-height: 28px;
+}
+.layui-txt {
+  display: block;
+  padding: 9px 15px;
+  line-height: 20px;
+}
