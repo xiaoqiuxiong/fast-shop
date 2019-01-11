@@ -1,6 +1,7 @@
 const router = require('koa-router')()
-const User = require('../schemas/user')
 const passport = require('passport')
+const User = require('../schemas/user')
+const Log = require('../schemas/log')
 // 判断方法
 function isEmpty(obj) {
     if (typeof obj == "undefined" || obj == null || obj == "") {
@@ -14,23 +15,33 @@ router.prefix('/api_admin')
 
 // 登录
 router.post('/login', async ctx => {
+    let body = ctx.request.body
     // 调用策略
-    await passport.authenticate('local',
-        (err, user, info, status) => {
-            if (isEmpty(user)) {
-                ctx.session.userinfo = user;
-                ctx.body = {
-                    code: 0,
-                    msg: info
-                }
-            } else {
-                ctx.body = {
-                    code: 1,
-                    msg: info
-                }
+    await passport.authenticate('local', (err, user, info, status) => {
+        if (isEmpty(user)) {
+            new Log({
+                cip: body.cip,
+                cname: body.cname,
+                remark: '管理系统登录',
+                status: true,
+                userid: user._id
+            }).save()
+            let newuser = {}
+            Object.assign(newuser,{cip: body.cip, cname: body.cname, logintime: new Date()}, user._doc)
+            ctx.session.userinfo = newuser
+            ctx.body = {
+                code: 0,
+                msg: info
+            };
+
+        } else {
+            ctx.body = {
+                code: 1,
+                msg: info
             }
-            ctx.login(user)
-        })(ctx)
+        }
+        ctx.login(user)
+    })(ctx)
 });
 
 // 退出登录
@@ -63,7 +74,6 @@ router.post('/register', async (ctx, next) => {
             }
             return
         }
-        console.log(666)
         let doc = await new User({
             phone,
             password

@@ -124,10 +124,11 @@ app.use(jwtKoa({
     path: [/^((?!reception_api).)*$/, '/reception_api/login', '/reception_api/register']
 }))
 
-app.use(async (ctx, next) => {
+app.use(async (ctx, next) => { 
     ctx.state.alltitle = 'F-shop 快商城'
     await next()
 })
+//加载自定义全局方法
 
 // routes
 app.use(registerRouter())
