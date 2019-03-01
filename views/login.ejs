@@ -35,7 +35,6 @@
     </div>
     <div class="footer">Copyright F-shop(快商城) by H-ui.admin.page.v3.0 & kao2 & mongodb</div>
     <% include public/footer %>
-    <script src="http://pv.sohu.com/cityjson?ie=utf-8"></script>
 
     <script>
     function sub() {
@@ -56,7 +55,7 @@
             cache: true,
             type: "POST",
             url: "/api_admin/login",
-            data: $('#formId').serialize() + '&cip=' + returnCitySN['cip'] + '&cname=' + returnCitySN['cname'],
+            data: $('#formId').serialize(),
             async: false,
             error: function(request) {
                 console.log(request)

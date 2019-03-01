@@ -27,7 +27,7 @@
                 </div>
                 <div class="row cl">
                     <div class="formControls col-xs-8 col-xs-offset-3">
-                        <!-- <a href="/login">已有账号？去登录</a> -->
+                        <a href="/login">已有账号？去登录</a>
                     </div>
                 </div>
                 <div class="row cl">
@@ -41,6 +41,7 @@
     </div>
     <div class="footer">Copyright F-shop(快商城) by H-ui.admin.page.v3.0 & kao2 & mongodb</div>
     <% include public/footer %>
+    <script src="http://pv.sohu.com/cityjson?ie=utf-8"></script>
     <script>
     function sub() {
         // 判断参数
@@ -64,7 +65,7 @@
             cache: true,
             type: "POST",
             url: "/api_admin/register",
-            data: $('#formId').serialize(),
+            data: $('#formId').serialize() + '&cip=' + returnCitySN['cip'] + '&cname=' + returnCitySN['cname'],
             async: false,
             error: function(request) {
                 console.log(request)

@@ -1,3 +1,23 @@
 @charset "utf-8";
 /* 你自己的样式 */
 
+/* 处理全屏时候黑黑一片问题 */
+
+:not(:root):-webkit-full-screen::backdrop{
+    background: transparent;
+}
+:not(:root):-moz-full-screen::backdrop{
+    background: transparent;
+}
+:not(:root):-ms-full-screen::backdrop{
+    background: transparent;
+}
+:not(:root):full-screen::backdrop{
+    background: transparent;
+}
+
+.navbar-nav>ul>li>.navbar-span{
+	display: inline-block;
+	padding: 0 6px; 
+	cursor: pointer;
+}
