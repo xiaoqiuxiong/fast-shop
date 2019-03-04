@@ -36,9 +36,37 @@ router.get('/admins', async ctx => {
             code: 0,
             msg: '',
             count: total,
+            pages: pages,
             data: orders
         }
         ctx.body = res
+    } catch (err) {
+        console.log(err)
+        const res = {
+            code: -1,
+            msg: 'sorry，数据请求失败，请刷新页面重新尝试'
+        }
+        ctx.body = res
+    }
+});
+
+// 删除管理员
+router.get('/admins_del', async ctx => {
+    const id = ctx.query.id
+    try {
+        if (await User.findByIdAndRemove(id)) {
+            const res = {
+                code: 0,
+                msg: '删除成功'
+            }
+            ctx.body = res
+        } else {
+            const res = {
+                code: -1,
+                msg: 'sorry，数据请求失败，请刷新页面重新尝试'
+            }
+            ctx.body = res
+        }
     } catch (err) {
         console.log(err)
         const res = {

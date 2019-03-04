@@ -1,29 +1,29 @@
 /* -----------H-ui前端框架-------------
-* H-ui.admin.page.js v3.1
-* http://www.h-ui.net/
-* Created & Modified by guojunhui
-* Date modified 2017.07.04
-* Copyright 2013-2017 北京颖杰联创科技有限公司 All rights reserved.
-* Licensed under MIT license.
-* http://opensource.org/licenses/MIT
-*/
+ * H-ui.admin.page.js v3.1
+ * http://www.h-ui.net/
+ * Created & Modified by guojunhui
+ * Date modified 2017.07.04
+ * Copyright 2013-2017 北京颖杰联创科技有限公司 All rights reserved.
+ * Licensed under MIT license.
+ * http://opensource.org/licenses/MIT
+ */
 /*左侧菜单响应式*/
-function Huiasidedisplay(){
-	if($(window).width()>=768){
-		$(".Hui-aside").show()
-	} 
+function Huiasidedisplay() {
+    if ($(window).width() >= 768) {
+        $(".Hui-aside").show()
+    }
 }
 /*获取皮肤cookie*/
-function getskincookie(){
-	var v = $.cookie("Huiskin");
-	var hrefStr=$("#skin").attr("href");
-	if(v==null||v==""){
-		v="default";
-	}
-	if(hrefStr!=undefined){
-		var hrefRes=hrefStr.substring(0,hrefStr.lastIndexOf('skin/'))+'skin/'+v+'/skin.css';
-		$("#skin").attr("href",hrefRes);
-	}
+function getskincookie() {
+    var v = $.cookie("Huiskin");
+    var hrefStr = $("#skin").attr("href");
+    if (v == null || v == "") {
+        v = "default";
+    }
+    if (hrefStr != undefined) {
+        var hrefRes = hrefStr.substring(0, hrefStr.lastIndexOf('skin/')) + 'skin/' + v + '/skin.css';
+        $("#skin").attr("href", hrefRes);
+    }
 }
 /*弹出层*/
 /*
@@ -34,34 +34,34 @@ function getskincookie(){
 	w		弹出层宽度（缺省调默认值）
 	h		弹出层高度（缺省调默认值）
 */
-function layer_show(title,url,w,h){
-	if (title == null || title == '') {
-		title=false;
-	};
-	if (url == null || url == '') {
-		url="404.html";
-	};
-	if (w == null || w == '') {
-		w=800;
-	};
-	if (h == null || h == '') {
-		h=($(window).height() - 50);
-	};
-	layer.open({
-		type: 2,
-		area: [w+'px', h +'px'],
-		fix: false, //不固定
-		maxmin: true,
-		shade:0.4,
-		title: title,
-		content: url
-	});
+function layer_show(title, url, w, h) {
+    if (title == null || title == '') {
+        title = false;
+    };
+    if (url == null || url == '') {
+        url = "404.html";
+    };
+    if (w == null || w == '') {
+        w = 800;
+    };
+    if (h == null || h == '') {
+        h = ($(window).height() - 50);
+    };
+    layer.open({
+        type: 2,
+        area: [w + 'px', h + 'px'],
+        fix: false, //不固定
+        maxmin: true,
+        shade: 0.4,
+        title: title,
+        content: url
+    });
 }
 
 /*关闭弹出框口*/
-function layer_close(){
-	var index = parent.layer.getFrameIndex(window.name);
-	parent.layer.close(index);
+function layer_close() {
+    var index = parent.layer.getFrameIndex(window.name);
+    parent.layer.close(index);
 }
 
 /*时间*/
@@ -86,50 +86,55 @@ function getHTMLDate(obj) {
 };
 
 /*个人信息*/
-function myselfinfo(){
-	layer.open({
-		type: 1,
-		area: ['300px','200px'],
-		fix: false, //不固定
-		maxmin: true,
-		shade:0.4,
-		title: '查看信息',
-		content: '<div>管理员信息</div>'
-	});
+function myselfinfo() {
+    layer.open({
+        type: 1,
+        area: ['300px', '200px'],
+        fix: false, //不固定
+        maxmin: true,
+        shade: 0.4,
+        title: '查看信息',
+        content: '<div>管理员信息</div>'
+    });
 }
-$(function(){
-	getHTMLDate($("#top_time"));
-	getskincookie();
-	Huiasidedisplay();
-	var resizeID;
-	$(window).resize(function(){
-		clearTimeout(resizeID);
-		resizeID = setTimeout(function(){
-			Huiasidedisplay();
-		},500);
-	});
-	
-	$(".nav-toggle").click(function(){
-		$(".Hui-aside").slideToggle();
-	});
-	$(".Hui-aside").on("click",".menu_dropdown dd li a",function(){
-		if($(window).width()<768){
-			$(".Hui-aside").slideToggle();
-		}
-	});
-	
-	/*左侧菜单*/
-	$(".Hui-aside").Huifold({
-		titCell:'.menu_dropdown dl dt',
-		mainCell:'.menu_dropdown dl dd',
-	});	
-		
-	/*换肤*/
-	$("#Hui-skin .dropDown-menu a").click(function(){
-		var v = $(this).attr("data-val");
-		$.cookie("Huiskin", v);
-		var hrefStr=$("#skin").attr("href");
-		var hrefRes=hrefStr.substring(0,hrefStr.lastIndexOf('skin/'))+'skin/'+v+'/skin.css';
-		$(window.frames.document).contents().find("#skin").attr("href",hrefRes);
-	});
-}); 
+$(function() {
+    getHTMLDate($("#top_time"));
+    getskincookie();
+    Huiasidedisplay();
+    var resizeID;
+    $(window).resize(function() {
+        clearTimeout(resizeID);
+        resizeID = setTimeout(function() {
+            Huiasidedisplay();
+        }, 500);
+    });
+
+    $(".nav-toggle").click(function() {
+        $(".Hui-aside").slideToggle();
+    });
+    $(".Hui-aside").on("click", ".menu_dropdown dd li a", function() {
+        if ($(window).width() < 768) {
+            $(".Hui-aside").slideToggle();
+        }
+    });
+
+    /*左侧菜单*/
+    $(".Hui-aside").Huifold({
+        titCell: '.menu_dropdown dl dt',
+        mainCell: '.menu_dropdown dl dd',
+    });
+
+    /*换肤*/
+    $("#Hui-skin .dropDown-menu a").click(function() {
+        var v = $(this).attr("data-val");
+        $.cookie("Huiskin", v);
+        var hrefStr = $("#skin").attr("href");
+        var hrefRes = hrefStr.substring(0, hrefStr.lastIndexOf('skin/')) + 'skin/' + v + '/skin.css';
+        $(window.frames.document).contents().find("#skin").attr("href", hrefRes);
+    });
+});
+
+/*时间格式化*/
+let time_fn = (time) => {
+    return new Date(time).toLocaleDateString().replace(/\//g, "-") + " " + new Date(time).toTimeString().substr(0, 8)
+}
