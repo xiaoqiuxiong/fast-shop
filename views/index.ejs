@@ -2,29 +2,32 @@
 
 <body>
     <% include public/navbar_wrapper %>
-    <% include public/hui_aside %>
-    <!--/_menu 作为公共模版分离出去-->
-    <section class="Hui-article-box">
-        <nav class="breadcrumb"><i class="Hui-iconfont"></i> <a href="/" class="maincolor">首页</a></a>
-            <span class="c-999 en">&gt;</span>
-            <span class="c-666"><%= mainTitle %></span>
-            <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);"
-                title="刷新"><i class="Hui-iconfont">&#xe68f;</i></a></nav>
-        <div class="Hui-article">
-            <article class="cl pd-20">
-                <p class="f-20 text-success">欢迎使用FAST-SHOP<span class="f-14">v1.0</span>后台模版！</p>
-                <p>登录IP：
-                    <%= userInfo ? userInfo.cip : '' %> 登录地址：
-                    <%= userInfo ? userInfo.cname : '' %>
-                </p>
-            </article>
-            <footer class="footer">
-                <p>感谢jQuery、layer、laypage、Validform、UEditor、My97DatePicker、iconfont、Datatables、WebUploaded、icheck、highcharts、bootstrap-Switch<br>
-                    Copyright &copy;2015 H-ui.admin v3.0 All Rights Reserved.
-                    <br> 本后台系统由<a href="http://www.xiaoqiuxiong.cn" target="_blank" title="肖秋雄" style="color: orange">肖秋雄</a>提供技术支持</p>
-            </footer>
+    <!-- 中部开始 -->
+    <% include public/left_nav %>
+    <!-- 右侧主体开始 -->
+    <div class="page-content">
+        <div class="layui-tab tab" lay-filter="xbs_tab" lay-allowclose="false">
+            <ul class="layui-tab-title">
+                <li class="home"><i class="layui-icon">&#xe68e;</i>我的桌面</li>
+            </ul>
+            <div class="layui-unselect layui-form-select layui-form-selected" id="tab_right">
+                <dl>
+                    <dd data-type="this">关闭当前</dd>
+                    <dd data-type="other">关闭其它</dd>
+                    <dd data-type="all">关闭全部</dd>
+                </dl>
+            </div>
+            <div class="layui-tab-content">
+                <div class="layui-tab-item layui-show">
+                    <iframe src='/welcome' frameborder="0" scrolling="yes" class="x-iframe"></iframe>
+                </div>
+            </div>
+            <div id="tab_show"></div>
         </div>
-    </section>
+    </div>
+    <div class="page-content-bg"></div>
+    <!-- 右侧主体结束 -->
+    <!-- 中部结束 -->
     <% include public/index_footer %>
     <!--请在下方写此页面业务相关的脚本-->
     <script>

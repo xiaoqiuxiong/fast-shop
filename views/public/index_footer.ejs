@@ -1,26 +1,15 @@
-<!--_footer 作为公共模版分离出去-->
-<script type="text/javascript" src="../lib/jquery/1.9.1/jquery.min.js"></script>
-<script type="text/javascript" src="../lib/layer/2.4/layer.js"></script>
-<script type="text/javascript" src="../static/h-ui/js/H-ui.js"></script>
-<script type="text/javascript" src="../static/h-ui.admin/js/H-ui.admin.page.js"></script>
-<!--/_footer /作为公共模版分离出去-->
-<script type="text/javascript">
-function FullScreen(el) {
-    var isFullscreen = document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen;
-    if (!isFullscreen) { //进入全屏,多重短路表达式
-        (el.requestFullscreen && el.requestFullscreen()) ||
-        (el.mozRequestFullScreen && el.mozRequestFullScreen()) ||
-        (el.webkitRequestFullscreen && el.webkitRequestFullscreen()) || (el.msRequestFullscreen && el.msRequestFullscreen());
-
-    } else { //退出全屏,三目运算符
-        document.exitFullscreen ? document.exitFullscreen() :
-            document.mozCancelFullScreen ? document.mozCancelFullScreen() :
-            document.webkitExitFullscreen ? document.webkitExitFullscreen() : '';
-    }
-}
-
-function toggleFullScreen(e) {
-    var el = e.srcElement || e.target; //target兼容Firefox
-    FullScreen(el);
-}
+<!-- 底部开始 -->
+<div class="footer">
+    <div class="copyright">Copyright ©2017 x-admin v2.3 All Rights Reserved</div>
+</div>
+<!-- 底部结束 -->
+<script>
+//百度统计可去掉
+var _hmt = _hmt || [];
+(function() {
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?b393d153aeb26b46e9431fabaf0f6190";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+})();
 </script>

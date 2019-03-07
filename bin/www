@@ -29,7 +29,7 @@ var server = http.createServer(app.callback());
  */
 
 // 连接数据库
-mongoose.connect('mongodb://localhost:27018/fastshop', function(err) {
+mongoose.connect('mongodb://localhost:27017/fastshop', function(err) {
     if (err) {
         console.log('数据库连接失败,错误信息：' + err)
     } else {
