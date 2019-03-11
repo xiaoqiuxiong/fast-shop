@@ -1,0 +1,38 @@
+<!doctype html>
+<html class="x-admin-sm">
+<% include ../public/iframe_header %>
+
+<body>
+    <div class="x-body">
+        <form class="layui-form">
+            <!-- 提示：如果你不想用form，你可以换成div等任何一个普通元素 -->
+            <div class="layui-form-item">
+                <label class="layui-form-label">品牌名称</label>
+                <div class="layui-form-mid layui-word-aux">
+                    <%= brandInfo.name %>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">是否国内品牌</label>
+                <div class="layui-form-mid layui-word-aux">
+                    <%= brandInfo.isChina ? '国内品牌' : '国外品牌' %>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">品牌LOGO</label>
+                <div class="layui-input-block">
+                   <img width="100" src="<%= brandInfo.logo %>" alt="<%= brandInfo.logo %>">
+                </div>
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">品牌描述</label>
+                <div class="layui-form-mid layui-word-aux">
+                    <%= brandInfo.describe %>
+                </div>
+            </div>
+        </form>
+    </div>
+    <% include ../public/iframe_footer %>
+</body>
+
+</html>

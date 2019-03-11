@@ -1,0 +1,63 @@
+<!doctype html>
+<html class="x-admin-sm">
+<% include ../public/iframe_header %>
+
+<body>
+    <div class="x-body">
+        <form class="layui-form">
+            <!-- 提示：如果你不想用form，你可以换成div等任何一个普通元素 -->
+            <div class="layui-form-item">
+                <label class="layui-form-label"><span class="x-red">*</span>分类名称</label>
+                <div class="layui-input-inline">
+                    <input value="<%= classifyInfo?classifyInfo.name:'' %>" lay-verify="required" type="text" name="name" placeholder="请输入" autocomplete="off" class="layui-input"> 
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">是否启动</label>
+                <div class="layui-input-inline">
+                    <select name="isUse" lay-filter="aihao">
+                        <option <%=classifyInfo?(classifyInfo.isUse? 'selected' : '' ):'' %> value="0">启用</option>
+                        <option <%=classifyInfo?(classifyInfo.isUse? '' : 'selected' ):'' %> value="1">禁用</option>
+                    </select>
+                </div>
+            </div>
+            <input type="hidden" name="classifyId" value="<%= classifyInfo?classifyInfo._id:'' %>">
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn" lay-submit lay-filter="*">立即提交</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <script>
+    layui.use(['layer', 'form'], function() {
+        var form = layui.form,
+            layer = layui.layer;
+
+        form.on('submit(*)', function(data) {
+            $.ajax({
+                url: '/api_admin/classify/add',
+                type: 'get',
+                data: data.field,
+                success(data) {
+                    if (data.code === 0) {
+                        layer.msg(data.msg, function() {
+                            x_admin_close()
+                            parent.saveReport()
+                        })
+                    } else {
+                        layer.msg(data.msg)
+                    }
+                },
+                error(error) {
+                    reject(data.token);
+                }
+            })
+            return false;
+        });
+    });
+    </script>
+    <% include ../public/iframe_footer %>
+</body>
+
+</html>

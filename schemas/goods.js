@@ -3,34 +3,38 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
-module.exports = mongoose.model('Good', new Schema({
+module.exports = mongoose.model('Goods', new Schema({
+	id: {
+		type: Number,
+		default: 0
+	},
 	// 添加时间
 	addtime: {
 		type: Date,
 		default: new Date()
 	},
-	// 分类id
-	cid: {
+	// 分类
+	classify: {
 		type: Schema.Types.ObjectId, 
-		ref: 'Classm'
+		ref: 'Classify'
+	},
+	// 品牌
+	brand: {
+		type: Schema.Types.ObjectId, 
+		ref: 'Brand'
 	},
 	// 商品标题
 	title: {
 		type: String,
 		default: ''
 	},
-	// 商品编码
-	pro_no: {
+	// 商品小标题
+	min_title: {
 		type: String,
 		default: ''
 	},
-	// 关键词
-	keywords: {
-		type: Array,
-		default: []
-	},
 	// 描述
-	desc: {
+	introduce: {
 		type: String,
 		default: ''
 	},
@@ -39,18 +43,13 @@ module.exports = mongoose.model('Good', new Schema({
 		type: Array,
 		default: []
 	},
-	// 新价格
+	// 价格
 	price: {
 		type: Number,
 		default: 0
 	},
 	// 成本价
-	constm: {
-		type: Number,
-		default: 0
-	},
-	// 原价
-	orininal_price: {
+	cost: {
 		type: Number,
 		default: 0
 	},
