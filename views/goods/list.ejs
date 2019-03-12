@@ -6,7 +6,7 @@
     <div class="x-body">
         <div class="layui-row">
             <form class="layui-form layui-col-md12 x-so" style="margin-bottom: 10px" onsubmit="return saveReport();">
-                <input type="text" name="searchData" placeholder="请输入品牌名称" autocomplete="off" class="layui-input ">
+                <input type="text" name="searchData" placeholder="请输入产品编号、标题" autocomplete="off" class="layui-input ">
                 <button type="submit" class="layui-btn" lay-filter="sreach"><i class="layui-icon">&#xe615;</i></button>
             </form>
         </div>
@@ -48,7 +48,7 @@
             cols: [
                 [
                     { type: 'checkbox', fixed: 'left' },
-                    { field: 'id', title: 'ID', width:60 },
+                    { field: 'id', title: '编号', width: 60 },
                     {
                         field: 'img',
                         title: '产品主图',
@@ -56,21 +56,30 @@
                         align: 'center',
                         templet: function(d) {
                             return `<img width="60" height="60" src="${d.img}" alt="" />`
-
                         }
                     },
-                    { field: 'brand', title: '品牌', width: 100 },
-                    { field: 'classify', title: '分类', width: 100 },
-                    { field: 'price', title: '价格', width: 100 },
-                    { field: 'introduce', title: '介绍' },
+                    { field: 'title', title: '标题', width: 100 },
                     {
-                        field: 'addtime',
-                        title: '添加时间',
-                        width: 160,
+                        field: 'brand',
+                        title: '品牌',
+                        width: 100,
                         templet: function(d) {
-                            return new Date(d.addtime).toLocaleDateString().replace(/\//g, "-") + " " + new Date(d.addtime).toTimeString().substr(0, 8)
+                            return d.brand.name
                         }
                     },
+                    {
+                        field: 'classify',
+                        title: '分类',
+                        width: 100,
+                        templet: function(d) {
+                            return d.classify.name
+                        }
+                    },
+                    { field: 'price', title: '价格 (元)', width: 100 },
+                    { field: 'cost', title: '成本价 (元)', width: 100 },
+                    { field: 'pv', title: '点击量', width: 100 },
+                    { field: 'sell', title: '销量', width: 100 },
+                    { field: 'introduce', title: '介绍' },
                     { title: '操作', align: 'center', toolbar: '#barDemo', width: 200, fixed: 'right' }
                 ]
             ]
@@ -83,11 +92,11 @@
             switch (obj.event) {
                 case 'delete':
                     if (data.length === 0) {
-                        layer.msg('请选择需要删除的管理员');
+                        layer.msg('请选择需要删除的产品');
                     } else {
                         const ids = []
                         for (var value of data) {
-                            ids.push(value._id)
+                            ids.push(value.id)
                         }
                         del(ids)
                     }
@@ -100,11 +109,11 @@
             var data = obj.data,
                 layEvent = obj.event;
             if (layEvent === 'del') {
-                del([data._id])
-            }else if(layEvent === 'detail'){
-                x_admin_show('查看产品','/goods/goods_show?id='+ data._id)
-            }else if(layEvent === 'edit'){
-                x_admin_show('编辑产品','/goods/goods_add?id='+ data._id)
+                del([data.id])
+            } else if (layEvent === 'detail') {
+                x_admin_show('查看产品', '/goods/goods_show?id=' + data.id)
+            } else if (layEvent === 'edit') {
+                x_admin_show('编辑产品', '/goods/goods_add?id=' + data.id)
             }
         });
 

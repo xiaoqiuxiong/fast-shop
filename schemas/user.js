@@ -5,6 +5,10 @@ const Schema = mongoose.Schema;
 
 // 用户的表结构
 module.exports = mongoose.model('User', new Schema({
+    id:{
+        type: String,
+        default: '0'
+    },
     // 添加时间
     addtime: {
         type: Date,

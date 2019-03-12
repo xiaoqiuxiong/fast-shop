@@ -1,6 +1,7 @@
 const router = require('koa-router')()
 const passport = require('passport')
 const User = require('../../schemas/user')
+const Ids = require('../../schemas/ids')
 
 // 判断方法
 function isEmpty(obj) {
@@ -57,6 +58,15 @@ router.post('/register', async (ctx, next) => {
     let password = body.password
     let cip = body.cip
     let cname = body.cname
+
+    let ids = await Ids.find({ id: 1 })
+    let user_num = 0
+    if (!isEmpty(ids)) {
+        await new Ids().save()
+    } else {
+        user_num = ids[0].user_num
+    }
+
     // 加密模块
     const crypto = require('crypto')
     const hash = crypto.createHash('sha1') //'md5'<'sha1'<'sha256'<'sha512  '
@@ -74,12 +84,14 @@ router.post('/register', async (ctx, next) => {
             return
         }
         let doc = await new User({
+            id: user_num + 1,
             phone,
             cip,
             cname,
             password
         }).save()
         if (isEmpty(doc)) {
+            await Ids.findOneAndUpdate({ id: 1 }, { user_num: user_num + 1 })
             ctx.body = {
                 code: 0,
                 msg: '注册成功',

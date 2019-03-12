@@ -23,8 +23,8 @@ router.get('/', async ctx => {
     try {
         const total = await User.count({
             $or: [
-                {nickname: { $regex: reg }},
-                {phone: { $regex: reg }}
+                { nickname: { $regex: reg } },
+                { phone: { $regex: reg } }
             ]
         })
         if (!isEmpty(total)) {
@@ -41,10 +41,10 @@ router.get('/', async ctx => {
         const skip = (page - 1) * limit
         let orders = await User.find({
             $or: [
-                {nickname: { $regex: reg }},
-                {phone: { $regex: reg }}
+                { nickname: { $regex: reg } },
+                { phone: { $regex: reg } }
             ]
-        }).sort({ _id: 1 }).limit(limit).skip(skip)
+        }).sort({ id: 1 }).limit(limit).skip(skip)
         const res = {
             code: 0,
             msg: '',
@@ -67,7 +67,7 @@ router.get('/', async ctx => {
 router.get('/del', async ctx => {
     const ids = ctx.query.ids.split(',')
     try {
-        if (await User.remove({ _id: { $in: ids } })) {
+        if (await User.remove({ id: { $in: ids } })) {
             const res = {
                 code: 0,
                 msg: '删除成功'

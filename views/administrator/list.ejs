@@ -45,7 +45,7 @@
             cols: [
                 [
                     { type: 'checkbox', fixed: 'left' },
-                    { field: '_id', title: 'ID', width: 200 },
+                    { field: 'id', title: '编号', width: 60 },
                     { field: 'nickname', title: '用户昵称', width: 120 },
                     { field: 'phone', title: '手机号码', width: 120 },
                     { field: 'cip', title: '用户ip', width: 120 },
@@ -87,7 +87,7 @@
                     } else {
                         const ids = []
                         for (var value of data) {
-                            ids.push(value._id)
+                            ids.push(value.id)
                         }
                         del(ids)
                     }
@@ -100,7 +100,7 @@
             var data = obj.data,
                 layEvent = obj.event;
             if (layEvent === 'del') {
-                del([data._id])
+                del([data.id])
             }
         });
 

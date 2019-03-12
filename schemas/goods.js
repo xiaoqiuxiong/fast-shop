@@ -5,8 +5,8 @@ const Schema = mongoose.Schema
 
 module.exports = mongoose.model('Goods', new Schema({
 	id: {
-		type: Number,
-		default: 0
+		type: String,
+		default: '0'
 	},
 	// 添加时间
 	addtime: {

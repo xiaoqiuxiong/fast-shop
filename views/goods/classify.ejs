@@ -48,12 +48,11 @@
             cols: [
                 [
                     { type: 'checkbox', fixed: 'left' },
-                    { field: '_id', title: 'ID', width: 200 },
-                    { field: 'name', title: '分类名称', width: 160 },
+                    { field: 'id', title: '编号', width: 60 },
+                    { field: 'name', title: '分类名称'},
                     {
                         field: 'isUse',
                         title: '是否启动',
-                        width: 160,
                         align: 'center',
                         templet: function(d) {
                             if (d.isUse) {
@@ -62,13 +61,6 @@
                                 return '<span class="layui-badge layui-bg-gray">禁用</span>'
                             }
 
-                        }
-                    },
-                    {
-                        field: 'addtime',
-                        title: '添加时间',
-                        templet: function(d) {
-                            return new Date(d.addtime).toLocaleDateString().replace(/\//g, "-") + " " + new Date(d.addtime).toTimeString().substr(0, 8)
                         }
                     },
                     { title: '操作', align: 'center', toolbar: '#barDemo', width: 200, fixed: 'right' }
@@ -102,9 +94,9 @@
             if (layEvent === 'del') {
                 del([data._id])
             } else if (layEvent === 'detail') {
-                x_admin_show('查看分类', '/goods/classify_show?id=' + data._id)
+                x_admin_show('查看分类', '/goods/classify_show?id=' + data.id)
             } else if (layEvent === 'edit') {
-                x_admin_show('编辑分类', '/goods/classify_add?id=' + data._id)
+                x_admin_show('编辑分类', '/goods/classify_add?id=' + data.id)
             }
         });
 

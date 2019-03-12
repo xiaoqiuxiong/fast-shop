@@ -12,8 +12,19 @@ module.exports = mongoose.model('Ids', new Schema({
     	type: Number, 
     	default: 1 
     },
-    // 商品总数
     goods_num: {
+        type: Number,
+        default: 0
+    },
+    brand_num: {
+        type: Number,
+        default: 0
+    },
+    classify_num: {
+        type: Number,
+        default: 0
+    },
+    user_num: {
         type: Number,
         default: 0
     }

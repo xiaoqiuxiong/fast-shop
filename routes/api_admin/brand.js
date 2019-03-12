@@ -6,6 +6,7 @@
  */
 const router = require('koa-router')()
 const Brand = require('../../schemas/brand')
+const Ids = require('../../schemas/ids')
 
 // 判断方法
 function isEmpty(obj) {
@@ -29,6 +30,7 @@ router.get('/', async ctx => {
     try {
         const total = await Brand.count({
             $or: [
+                { id: { $regex: reg } },
                 { name: { $regex: reg } }
             ]
         })
@@ -46,9 +48,10 @@ router.get('/', async ctx => {
         const skip = (page - 1) * limit
         let orders = await Brand.find({
             $or: [
+                { id: { $regex: reg } },
                 { name: { $regex: reg } }
             ]
-        }).sort({ _id: 1 }).limit(limit).skip(skip)
+        }).sort({ id: 1 }).limit(limit).skip(skip)
         const res = {
             code: 0,
             msg: '',
@@ -73,7 +76,7 @@ router.get('/add', async (ctx, next) => {
     let logo = ctx.query.imgurl
     let isChina = ctx.query.isChina
     let describe = ctx.query.describe
-    let brandid = ctx.query.brandid || null
+    let brandid = ctx.query.id || null
     if (isChina == 0) {
         isChina = true
     } else {
@@ -81,7 +84,7 @@ router.get('/add', async (ctx, next) => {
     }
     try {
         if (brandid) {
-            const brand = await Brand.findOneAndUpdate({ _id: brandid }, {
+            const brand = await Brand.findOneAndUpdate({ id: brandid }, {
                 name,
                 logo,
                 isChina,
@@ -102,6 +105,14 @@ router.get('/add', async (ctx, next) => {
                 return false
             }
         } else {
+            let ids = await Ids.find({ id: 1 })
+            let brand_num = 0
+            if (!isEmpty(ids)) {
+                await new Ids().save()
+            } else {
+                brand_num = ids[0].brand_num
+            }
+
             const brand = await Brand.findOne({ name })
             if (isEmpty(brand)) {
                 ctx.body = {
@@ -111,12 +122,14 @@ router.get('/add', async (ctx, next) => {
                 return false
             }
             let doc = await new Brand({
+                id: brand_num + 1,
                 name,
                 logo,
                 isChina,
                 describe
             }).save()
             if (isEmpty(doc)) {
+                await Ids.findOneAndUpdate({ id: 1 }, { brand_num: brand_num + 1 })
                 ctx.body = {
                     code: 0,
                     msg: '新增成功',
@@ -141,7 +154,7 @@ router.get('/add', async (ctx, next) => {
 router.get('/del', async ctx => {
     const ids = ctx.query.ids.split(',')
     try {
-        if (await Brand.remove({ _id: { $in: ids } })) {
+        if (await Brand.remove({ id: { $in: ids } })) {
             const res = {
                 code: 0,
                 msg: '删除成功'

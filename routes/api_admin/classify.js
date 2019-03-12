@@ -6,6 +6,7 @@
  */
 const router = require('koa-router')()
 const Classify = require('../../schemas/classify')
+const Ids = require('../../schemas/ids')
 
 // 判断方法
 function isEmpty(obj) {
@@ -29,6 +30,7 @@ router.get('/', async ctx => {
     try {
         const total = await Classify.count({
             $or: [
+                { id: { $regex: reg } },
                 { name: { $regex: reg } }
             ]
         })
@@ -46,9 +48,10 @@ router.get('/', async ctx => {
         const skip = (page - 1) * limit
         let orders = await Classify.find({
             $or: [
+                { id: { $regex: reg } },
                 { name: { $regex: reg } }
             ]
-        }).sort({ _id: 1 }).limit(limit).skip(skip)
+        }).sort({ id: 1 }).limit(limit).skip(skip)
         const res = {
             code: 0,
             msg: '',
@@ -71,7 +74,7 @@ router.get('/', async ctx => {
 router.get('/add', async (ctx, next) => {
     let name = ctx.query.name
     let isUse = ctx.query.isUse
-    let classifyId = ctx.query.classifyId || null
+    let classifyId = ctx.query.id || null
     if (isUse == 0) {
         isUse = true
     } else {
@@ -79,7 +82,7 @@ router.get('/add', async (ctx, next) => {
     }
     try {
         if (classifyId) {
-            const classify = await Classify.findOneAndUpdate({ _id: classifyId }, {
+            const classify = await Classify.findOneAndUpdate({ id: classifyId }, {
                 name,
                 isUse
             })
@@ -98,6 +101,14 @@ router.get('/add', async (ctx, next) => {
                 return false
             }
         } else {
+            let ids = await Ids.find({ id: 1 })
+            let classify_num = 0
+            if (!isEmpty(ids)) {
+                await new Ids().save()
+            } else {
+                classify_num = ids[0].classify_num
+            }
+
             const classify = await Classify.findOne({ name })
             if (isEmpty(classify)) {
                 ctx.body = {
@@ -107,10 +118,12 @@ router.get('/add', async (ctx, next) => {
                 return false
             }
             let doc = await new Classify({
+                id: classify_num + 1,
                 name,
                 isUse
             }).save()
             if (isEmpty(doc)) {
+                await Ids.findOneAndUpdate({ id: 1 }, { classify_num: classify_num + 1 })
                 ctx.body = {
                     code: 0,
                     msg: '新增成功',
