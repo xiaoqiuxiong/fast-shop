@@ -10,15 +10,23 @@ function isEmpty(obj) {
     }
 }
 
-router.prefix('/api_admin')
+router.prefix('/api_admin/admins')
 
 // 获取管理员列表
-router.get('/admins', async ctx => {
+router.get('/', async ctx => {
     let page = Number(ctx.query.page || 1)
     const limit = Number(ctx.query.limit || 10)
     let pages = 0
+    const searchData = ctx.query.searchData
+    //不区分大小写
+    const reg = new RegExp(searchData, 'i')
     try {
-        const total = await User.count()
+        const total = await User.count({
+            $or: [
+                {nickname: { $regex: reg }},
+                {phone: { $regex: reg }}
+            ]
+        })
         if (!isEmpty(total)) {
             const res = {
                 code: -1,
@@ -31,7 +39,12 @@ router.get('/admins', async ctx => {
         page = Math.min(page, pages)
         page = Math.max(page, 1)
         const skip = (page - 1) * limit
-        let orders = await User.find().sort({ _id: 1 }).limit(limit).skip(skip)
+        let orders = await User.find({
+            $or: [
+                {nickname: { $regex: reg }},
+                {phone: { $regex: reg }}
+            ]
+        }).sort({ _id: 1 }).limit(limit).skip(skip)
         const res = {
             code: 0,
             msg: '',
@@ -51,10 +64,10 @@ router.get('/admins', async ctx => {
 });
 
 // 删除管理员
-router.get('/admins_del', async ctx => {
-    const id = ctx.query.id
+router.get('/del', async ctx => {
+    const ids = ctx.query.ids.split(',')
     try {
-        if (await User.findByIdAndRemove(id)) {
+        if (await User.remove({ _id: { $in: ids } })) {
             const res = {
                 code: 0,
                 msg: '删除成功'

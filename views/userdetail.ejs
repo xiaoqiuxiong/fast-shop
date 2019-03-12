@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html class="x-admin-sm">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+    <link rel="stylesheet" href="../css/font.css">
+    <link rel="stylesheet" href="../css/xadmin.css">
+</head>
+
+<body>
+    <div class="x-body">
+        <fieldset class="layui-elem-field">
+            <legend>用户信息</legend>
+            <div class="layui-field-box">
+                <table class="layui-table">
+                    <tbody>
+                        <tr>
+                            <th>I P 地址</th>
+                            <td>
+                                <%= userInfo.cip %>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>用户地址</th>
+                            <td>
+                                <%= userInfo.cname %>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>用户ID</th>
+                            <td>
+                                <%= userInfo.userid %>
+                            </td>
+                        </tr>
+                         <tr>
+                            <th>用户昵称</th>
+                            <td>
+                                <%= userInfo.nickname %>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>用户手机号</th>
+                            <td>
+                                <%= userInfo.phone %>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </fieldset>
+    </div>
+</body>
+
+</html>

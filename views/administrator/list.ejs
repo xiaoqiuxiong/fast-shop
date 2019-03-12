@@ -1,120 +1,138 @@
-<% include ../public/index_header %>
+<!doctype html>
+<html class="x-admin-sm">
+<% include ../public/iframe_header %>
 
 <body>
-    <% include ../public/navbar_wrapper %>
-    <% include ../public/hui_aside %>
-    <!--/_menu 作为公共模版分离出去-->
-    <section class="Hui-article-box">
-        <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> <a href="/" class="maincolor">首页</a> <span class="c-gray en">&gt;</span>
-            <%= mainTitle %> <span class="c-gray en">&gt;</span>
-            <%= subTitle %> <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
-        <div class="Hui-article">
-            <article class="cl pd-20">
-                <div class="cl pd-5 bg-1 bk-gray"> <span class="l"> <a href="javascript:;" onclick="datadel()" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a> </span> <span class="r">共有数据：<strong id="count">0</strong> 条</span> </div>
-                <div class="mt-10">
-                    <table class="table table-border table-bordered table-hover table-bg">
-                        <thead>
-                            <tr class="text-c">
-                                <th width="25"><input type="checkbox" value="" name=""></th>
-                                <th width="200">ID</th>
-                                <th width="200">用户昵称</th>
-                                <th width="200">用户手机号</th>
-                                <th width="200">所在城市</th>
-                                <th width="160">是否超级管理员</th>
-                                <th>注册时间</th>
-                                <th width="70">操作</th>
-                            </tr>
-                        </thead>
-                        <tbody id="listTbody">
-                        </tbody>
-                    </table>
-                </div>
-                <div id="page"></div>
-            </article>
+    <div class="x-body">
+        <div class="layui-row">
+            <form class="layui-form layui-col-md12 x-so" style="margin-bottom: 10px" onsubmit="return saveReport();">
+                <input type="text" name="searchData" placeholder="请输入用户昵称、手机号" autocomplete="off" class="layui-input ">
+                <button type="submit" class="layui-btn" lay-filter="sreach"><i class="layui-icon">&#xe615;</i></button>
+            </form>
         </div>
-    </section>
-    <% include ../public/index_footer %>
-    <!--请在下方写此页面业务相关的脚本-->
-    <script type="text/javascript" src="lib/My97DatePicker/4.8/WdatePicker.js"></script>
-    <script type="text/javascript" src="lib/laypage/1.2/laypage.js"></script>
-    <script type="text/javascript">
-    $(() => {
-        let iniPage = false
-        $.ajax({
-            url: '/api_admin/admins',
-            type: 'get',
-            success(res) {
-                if (res.code == 0) {
-                    $('#count').html(res.count)
-                    apply(res)
-                    laypage({
-                        cont: $('#page'),
-                        pages: res.pages,
-                        hash: true,
-                        jump(obj) {
-                            if (obj.curr > 1 || iniPage) {
-                                $.ajax({
-                                    url: '/api_admin/admins',
-                                    type: 'get',
-                                    data: {
-                                        page: obj.curr
-                                    },
-                                    success(res) {
-                                        apply(res)
-                                        iniPage = true
-                                    }
-                                })
-                            }
-                        }
-                    })
-                }
-            }
-        })
-    })
+        <table class="layui-hide" id="demo" lay-filter="test"></table>
+    </div>
+    <script type="text/html" id="toolbar">
+        <div class="layui-table-tool-temp">
+            <div class="layui-inline" lay-event="delete"><i class="layui-icon layui-icon-delete"></i></div>
+        </div>
+</script>
+    <script type="text/html" id="barDemo">
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+    <script>
+    layui.use(['laydate', 'table', 'layer'], function() {
+        var laydate = layui.laydate,
+            table = layui.table,
+            layer = layui.layer;
 
-    /*渲染数据*/
-    let apply = (res) => {
-        if (res.code == 0) {
-            $('#listTbody').html('')
-            for (e of res.data) {
-                $('#listTbody').append(
-                    `<tr class="text-c">
-                        <td><input type="checkbox" value="${e._id}" name=""></td>
-                        <td>${e._id}</td>
-                        <td>${e.nickname}</td>
-                        <td>${e.phone}</td> 
-                        <td>${e.cname}</td>
-                        <td>${e.isSuper ? '<span class="label label-primary radius">超级管理员</span>' : '<span class="label label-default radius">管理员</span>'}</td>
-                        <td>${time_fn(e.addtime)}</td>
-                        <td class="f-14"><a title="删除" href="javascript:;" onclick="admin_role_del(this,'${e._id}')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;</i></a></td>
-                    </tr>`
-                )
-            }
-        }
-    }
-
-    /*管理员-角色-删除*/
-    function admin_role_del(obj, id) {
-        layer.confirm('角色删除须谨慎，确认要删除吗？', function(index) {
-            console.log(obj, id)
-            $.ajax({
-                url: '/api_admin/admins_del',
-                type: 'get',
-                data: {
-                    id: id
-                },
-                success(res) {
-                    if (res.code == 0) {
-                        layer.msg('已删除!', { icon: 1, time: 1000 },()=>{
-                            location.reload()
-                        });
-                    }
-                }
-            })
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#start' //指定元素
         });
-    }
+
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#end' //指定元素
+        });
+
+        //第一个实例
+        var tableIns = table.render({
+            elem: '#demo',
+            url: '/api_admin/admins',
+            page: true,
+            toolbar: '#toolbar',
+            cols: [
+                [
+                    { type: 'checkbox', fixed: 'left' },
+                    { field: '_id', title: 'ID', width: 200 },
+                    { field: 'nickname', title: '用户昵称', width: 120 },
+                    { field: 'phone', title: '手机号码', width: 120 },
+                    { field: 'cip', title: '用户ip', width: 120 },
+                    { field: 'cname', title: 'ip地址', width: 120 },
+                    {
+                        field: 'isSuper',
+                        title: '是否超级管理员',
+                        width: 120,
+                        align: 'center',
+                        templet: function(d) {
+                            if (d.isSuper) {
+                                return '<span class="layui-badge layui-bg-blue">超级管理员</span>'
+                            } else {
+                                return '<span class="layui-badge layui-bg-gray">普通管理员</span>'
+                            }
+
+                        }
+                    },
+                    {
+                        field: 'addtime',
+                        title: '添加时间',
+                        templet: function(d) {
+                            return new Date(d.addtime).toLocaleDateString().replace(/\//g, "-") + " " + new Date(d.addtime).toTimeString().substr(0, 8)
+                        }
+                    },
+                    { title: '操作', align: 'center', toolbar: '#barDemo', width: 80, fixed: 'right' }
+                ]
+            ]
+        });
+
+        //监听头工具栏事件
+        table.on('toolbar(test)', function(obj) {
+            var checkStatus = table.checkStatus(obj.config.id),
+                data = checkStatus.data; //获取选中的数据
+            switch (obj.event) {
+                case 'delete':
+                    if (data.length === 0) {
+                        layer.msg('请选择需要删除的管理员');
+                    } else {
+                        const ids = []
+                        for (var value of data) {
+                            ids.push(value._id)
+                        }
+                        del(ids)
+                    }
+                    break;
+            };
+        });
+
+        //监听行工具事件
+        table.on('tool(test)', function(obj) {
+            var data = obj.data,
+                layEvent = obj.event;
+            if (layEvent === 'del') {
+                del([data._id])
+            }
+        });
+
+        function del(ids) {
+            layer.confirm('确认要删除吗？', function(index) {
+                const idsUrl = ids.join(',')
+                $.get("/api_admin/admins/del?ids=" + idsUrl, function(data, status) {
+                    if (data.code === 0) {
+                        layer.msg(data.msg, { icon: 1 });
+                        tableIns.reload();
+                    } else {
+                        layer.msg(data.msg);
+                    }
+                });
+            });
+        };
+
+        window.saveReport = function() {
+            const searchData = $('input[name="searchData"]').val()
+            tableIns.reload({
+                where: {
+                    searchData: searchData
+                },
+                page: {
+                    curr: 1
+                }
+            });
+            return false;
+        }
+    });
     </script>
-    <!--/请在上方写此页面业务相关的脚本-->
+    <% include ../public/iframe_footer %>
 </body>
 
 </html>

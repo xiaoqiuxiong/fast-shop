@@ -1,0 +1,26 @@
+<!doctype html>
+<html class="x-admin-sm">
+<% include ../public/iframe_header %>
+
+<body>
+    <div class="x-body">
+        <form class="layui-form">
+            <!-- 提示：如果你不想用form，你可以换成div等任何一个普通元素 -->
+            <div class="layui-form-item">
+                <label class="layui-form-label">分类名称</label>
+                <div class="layui-form-mid layui-word-aux">
+                    <%= classifyInfo.name %>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">是否启用</label>
+                <div class="layui-form-mid layui-word-aux">
+                    <%= classifyInfo.isUse ? '启用' : '禁用' %>
+                </div>
+            </div>
+        </form>
+    </div>
+    <% include ../public/iframe_footer %>
+</body>
+
+</html>

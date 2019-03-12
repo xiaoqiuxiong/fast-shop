@@ -1,6 +1,6 @@
 <!-- 顶部开始 -->
 <div class="container">
-    <div class="logo"><a href="/">Fast-shop v1.01</a></div>
+    <div class="logo"><a href="/">fast-shop v1.0</a></div>
     <div class="left_open">
         <i title="展开左侧栏" class="iconfont">&#xe699;</i>
     </div>
@@ -11,7 +11,7 @@
                 <!-- 二级菜单 -->
                 <dd><a onclick="x_admin_show('资讯','http://www.baidu.com')"><i class="iconfont">&#xe6a2;</i>资讯</a></dd>
                 <dd><a onclick="x_admin_show('图片','http://www.baidu.com')"><i class="iconfont">&#xe6a8;</i>图片</a></dd>
-                <dd><a onclick="x_admin_show('用户','http://www.baidu.com')"><i class="iconfont">&#xe6b8;</i>用户</a></dd>
+                <dd><a onclick="x_admin_show('产品','http://www.baidu.com')"><i class="iconfont">&#xe83b;</i>产品</a></dd>
             </dl>
         </li>
     </ul>
@@ -21,12 +21,11 @@
                 <%= userInfo ? (userInfo.isSuper ? '超级管理员' : '普通管理员') : '' %> ( <%= userInfo ? userInfo.nickname : '' %> )</a>
             <dl class="layui-nav-child">
                 <!-- 二级菜单 -->
-                <dd><a onclick="x_admin_show('个人信息','http://www.baidu.com')">个人信息</a></dd>
-                <dd><a onclick="x_admin_show('切换帐号','http://www.baidu.com')">切换帐号</a></dd>
+                <dd><a onclick="x_admin_show('个人信息','/userdetail')">个人信息</a></dd>
                 <dd><a href="javascript:logout()">退出</a></dd>
             </dl>
         </li>
-        <!-- <li class="layui-nav-item to-index"><a href="/">前台首页</a></li> -->
+        <li class="layui-nav-item to-index"><a href="/">首页</a></li>
     </ul>
 </div>
 <!-- 顶部结束 -->
