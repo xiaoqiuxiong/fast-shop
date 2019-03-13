@@ -33,7 +33,6 @@ app.use(cors({
     allowHeaders: ['Content-Type', 'Authorization', 'Accept'],
 }))
 
-
 // error handler
 onerror(app)
 

@@ -27,5 +27,9 @@ module.exports = mongoose.model('Ids', new Schema({
     user_num: {
         type: Number,
         default: 0
+    },
+    member_num: {
+        type: Number,
+        default: 0
     }
 }))

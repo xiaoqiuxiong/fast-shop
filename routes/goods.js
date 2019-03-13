@@ -9,7 +9,9 @@ const title = '主页'
 const mainTitle = '产品管理'
 
 router.get('/', async (ctx, next) => {
-    await ctx.render('goods/list')  
+    const brands = await Brand.find()
+    const classifys = await Classify.find()
+    await ctx.render('goods/list', { brands: brands, classifys: classifys })
 })
 
 router.get('/goods_add', async (ctx, next) => {
@@ -27,7 +29,7 @@ router.get('/goods_add', async (ctx, next) => {
 router.get('/goods_show', async (ctx, next) => {
     const id = ctx.query.id
     try {
-        const doc = await Goods.findOne({ id: id }).populate(['brand','classify'])
+        const doc = await Goods.findOne({ id: id }).populate(['brand', 'classify'])
         if (!doc) {
             await ctx.render('goods/goods_show', { goodsInfo: null })
             return false

@@ -54,8 +54,8 @@ module.exports = mongoose.model('Order', new Schema({
 		type: Number,
 		default: 0
 	},
-	// 收货地址id
-	address_id: {
+	// 收货地址
+	address: {
 		type: Schema.Types.ObjectId,
 		ref: 'Address'
 	}

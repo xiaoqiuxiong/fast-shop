@@ -28,7 +28,7 @@ router.post('/login', async ctx => {
                 cname: user.cname,
                 isSuper: user.isSuper
             }
-            ctx.cookies.set('userInfo', new Buffer(JSON.stringify(userInfo)).toString('base64'))
+            ctx.cookies.set('userInfo', new Buffer(JSON.stringify(userInfo)).toString('base64'), {maxAge:1000 * 60 * 60 * 24})
             ctx.body = {
                 code: 0,
                 msg: info
