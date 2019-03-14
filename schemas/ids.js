@@ -31,5 +31,9 @@ module.exports = mongoose.model('Ids', new Schema({
     member_num: {
         type: Number,
         default: 0
+    },
+    address_num: {
+        type: Number,
+        default: 0
     }
 }))

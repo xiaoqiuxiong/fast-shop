@@ -1,2 +1,1 @@
-{"_id":{"$oid":"5c87189dd2de242b385e48b8"},"id":1,"nickname":"无名氏","isSuper":true,"phone":"17512053075","cip":"183.11.38.5","cname":"广东省深圳市","password":"7c4a8d09ca3762af61e59520943dc26494f8941b","addtime":{"$date":"2019-03-12T02:25:33.695Z"},"__v":0}
-{"_id":{"$oid":"5c871a3443be2c24d00d6a40"},"id":3,"nickname":"无名氏","isSuper":false,"phone":"13800138000","cip":"183.11.38.5","cname":"广东省深圳市","password":"7c4a8d09ca3762af61e59520943dc26494f8941b","addtime":{"$date":"2019-03-12T02:32:20.282Z"},"__v":0}
+{"_id":{"$oid":"5c87189dd2de242b385e48b8"},"id":"1","nickname":"无名氏","isSuper":true,"phone":"17512053075","cip":"183.11.38.5","cname":"广东省深圳市","password":"7c4a8d09ca3762af61e59520943dc26494f8941b","addtime":{"$date":"2019-03-12T02:25:33.695Z"},"__v":0}

@@ -1,0 +1,129 @@
+<!doctype html>
+<html class="x-admin-sm">
+<% include ../public/iframe_header %>
+
+<body>
+    <div class="x-body">
+        <table class="layui-hide" id="demo" lay-filter="test"></table>
+    </div>
+    <script type="text/html" id="toolbar">
+        <div class="layui-table-tool-temp">
+            <div class="layui-inline" lay-event="delete"><i class="layui-icon layui-icon-delete"></i></div>
+        </div>
+</script>
+    <script type="text/html" id="barDemo">
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+    <script>
+    layui.use(['laydate', 'table', 'layer'], function() {
+        var laydate = layui.laydate,
+            table = layui.table,
+            layer = layui.layer;
+
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#start' //指定元素
+        });
+
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#end' //指定元素
+        });
+
+        //第一个实例
+        var tableIns = table.render({
+            elem: '#demo',
+            url: '/api_admin/address?user=<%= member %>',
+            page: true,
+            toolbar: '#toolbar',
+            cols: [
+                [
+                    { type: 'checkbox', fixed: 'left' },
+                    { field: 'id', title: '编号', width: 60 },
+                    { field: 'name', title: '姓名', width: 100 },
+                    { field: 'phone', title: '手机', width: 120 },
+                    {
+                        field: 'isCommon',
+                        title: '是否常用地址',
+                        width: 100,
+                        align: 'center',
+                        templet: function(d) {
+                            if (d.isCommon) {
+                                return '<span class="layui-badge layui-bg-blue">是</span>'
+                            } else {
+                                return '<span class="layui-badge layui-bg-gray">否</span>'
+                            }
+                        }
+                    },
+                    {
+                        field: 'name',
+                        title: '地址详情',
+                        templet: function(d) {
+                            return d.province + ' ' + d.city + ' ' + d.towns + ' ' + d.detail
+                        }
+                    },
+                    { title: '操作', align: 'center', toolbar: '#barDemo', width: 80, fixed: 'right' }
+                ]
+            ]
+        });
+
+        //监听头工具栏事件
+        table.on('toolbar(test)', function(obj) {
+            var checkStatus = table.checkStatus(obj.config.id),
+                data = checkStatus.data; //获取选中的数据
+            switch (obj.event) {
+                case 'delete':
+                    if (data.length === 0) {
+                        layer.msg('请选择需要删除的收货地址');
+                    } else {
+                        const ids = []
+                        for (var value of data) {
+                            ids.push(value.id)
+                        }
+                        del(ids)
+                    }
+                    break;
+            };
+        });
+
+        //监听行工具事件
+        table.on('tool(test)', function(obj) {
+            var data = obj.data,
+                layEvent = obj.event;
+            if (layEvent === 'del') {
+                del([data.id])
+            }
+        });
+
+        function del(ids) {
+            layer.confirm('确认要删除吗？', function(index) {
+                const idsUrl = ids.join(',')
+                $.get("/api_admin/address/del?ids=" + idsUrl, function(data, status) {
+                    if (data.code === 0) {
+                        layer.msg(data.msg, { icon: 1 });
+                        tableIns.reload();
+                    } else {
+                        layer.msg(data.msg);
+                    }
+                });
+            });
+        };
+
+        window.saveReport = function() {
+            const searchData = $('input[name="searchData"]').val()
+            tableIns.reload({
+                where: {
+                    searchData: searchData
+                },
+                page: {
+                    curr: 1
+                }
+            });
+            return false;
+        }
+    });
+    </script>
+    <% include ../public/iframe_footer %>
+</body>
+
+</html>
