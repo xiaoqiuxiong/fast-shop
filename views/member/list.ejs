@@ -2,14 +2,13 @@
 <html class="x-admin-sm">
 <% include ../public/iframe_header %>
 <style>
-    .citybox{
-        padding-right: 10px;
+    .distpicker select{
+        height: 30px;
+        width: 160px;
+        border-radius: 0;
     }
-    .citybox label{
-        width: 40px
-    }
-    .citybox select{
-        width: 120px
+    .distpicker select:focus{
+        border-color: #189f92!important;
     }
 </style>
 
@@ -17,16 +16,12 @@
     <div class="x-body">
         <div class="layui-row">
             <form class="layui-col-md12 x-so" style="margin-bottom: 10px" onsubmit="return saveReport();">
-                <div class="layui-input-inline">
-                    <div class="citybox">
-                        <label class="city-label" for="seachprov">省份</label>
-                        <select class="layui-select" id="seachprov" name="seachprov" onchange="changeComplexProvince(this.value, sub_array, 'seachcity', 'seachdistrict');"></select>
-                        <label class="city-label" for="homecity">城市</label>
-                        <select class="layui-select" id="seachcity" name="homecity" onchange="changeCity(this.value,'seachdistrict','seachdistrict');"></select>
-                        <label class="city-label" for="seachdistrict">区县</label>
-                        <span id="seachdistrict_div">
-                            <select class="layui-select" id="seachdistrict" name="seachdistrict"></select>
-                        </span>
+                <div class="layui-input-inline distpicker" id="distpicker">
+                    <div class="layui-input-inline">
+                        <select name="provinces"></select>
+                    </div>
+                    <div class="layui-input-inline">
+                        <select name="city"></select>
                     </div>
                 </div>
                 <div class="layui-input-inline">
@@ -46,52 +41,15 @@
         <a class="layui-btn layui-btn-xs" lay-event="address">收货地址管理</a>
         <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
 </script>
-    <script type="text/javascript" src="js/area.js"></script>
-    <script type="text/javascript" src="js/AreaData_min.js"></script>
+    <script type="text/javascript" src="js/distpicker.js"></script>
     <script>
     $(function() {
-        initComplexArea('seachprov', 'seachcity', 'seachdistrict', area_array, sub_array, '0', '0', '0');
-    });
-
-    //得到地区码
-    function getAreaID() {
-        var area = 0;
-        if ($("#seachdistrict").val() != "0") {
-            area = $("#seachdistrict").val();
-        } else if ($("#seachcity").val() != "0") {
-            area = $("#seachcity").val();
-        } else {
-            area = $("#seachprov").val();
-        }
-        return area;
-    }
-
-    function showAreaID() {
-        //地区码
-        var areaID = getAreaID();
-        //地区名
-        var areaName = getAreaNamebyID(areaID);
-        alert("您选择的地区码：" + areaID + "      地区名：" + areaName);
-    }
-
-    //根据地区码查询地区名
-    function getAreaNamebyID(areaID) {
-        var areaName = "";
-        if (areaID.length == 2) {
-            areaName = area_array[areaID];
-        } else if (areaID.length == 4) {
-            var index1 = areaID.substring(0, 2);
-            areaName = area_array[index1] + " " + sub_array[index1][areaID];
-        } else if (areaID.length == 6) {
-            var index1 = areaID.substring(0, 2);
-            var index2 = areaID.substring(0, 4);
-            areaName = area_array[index1] + " " + sub_array[index1][index2] + " " + sub_arr[index2][areaID];
-        }
-        return areaName;
-    }
-    </script>
-    <script>
+        $('#distpicker').distpicker({
+            autoSelect: false
+        });
+    })
     layui.use(['laydate', 'table', 'layer'], function() {
+
         var laydate = layui.laydate,
             table = layui.table,
             layer = layui.layer;
@@ -122,9 +80,9 @@
                         width: 100,
                         align: 'center',
                         templet(d) {
-                            if(d.img){
+                            if (d.img) {
                                 return `<img width="28" height="28" src="${d.img}" alt="会员头像"></img>`
-                            }else{
+                            } else {
                                 return `<img width="28" height="28" src="/images/logo.jpg" alt="会员头像"></img>`
                             }
                         }
@@ -137,23 +95,27 @@
                         width: 80,
                         align: 'center',
                         templet(d) {
-                            if(d.sex == 1){
+                            if (d.sex == 1) {
                                 return '男'
-                            }else if(d.sex == 2){
+                            } else if (d.sex == 2) {
                                 return '女'
-                            }else{
+                            } else {
                                 return ''
                             }
                         }
                     },
                     { field: 'phone', title: '手机号码', width: 120 },
-                    { field: 'provinces', title: '所在省市' ,templet(d){
-                        if(d.provinces){
-                            return provinces + city
-                        }else{
-                            return ''
+                    {
+                        field: 'provinces',
+                        title: '所在省市',
+                        templet(d) {
+                            if (d.provinces) {
+                                return provinces + city
+                            } else {
+                                return ''
+                            }
                         }
-                    }},
+                    },
                     { title: '操作', align: 'center', toolbar: '#barDemo', width: 200, fixed: 'right' }
                 ]
             ]
@@ -185,7 +147,7 @@
                 layEvent = obj.event;
             if (layEvent === 'del') {
                 del([data.id])
-            }else if (layEvent === 'address') {
+            } else if (layEvent === 'address') {
                 x_admin_show('收货地址管理', '/address?member=' + data._id)
             }
         });

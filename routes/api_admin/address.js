@@ -13,7 +13,7 @@ function isEmpty(obj) {
 
 router.prefix('/api_admin/address')
 
-// 获取地址列表
+// 列表
 router.get('/', async ctx => {
     let page = Number(ctx.query.page || 1)
     const limit = Number(ctx.query.limit || 10)
@@ -55,6 +55,31 @@ router.get('/', async ctx => {
     }
 });
 
-
+// 删除
+router.get('/del', async ctx => {
+    const ids = ctx.query.ids.split(',')
+    try {
+        if (await Address.remove({ id: { $in: ids } })) {
+            const res = {
+                code: 0,
+                msg: '删除成功'
+            }
+            ctx.body = res
+        } else {
+            const res = {
+                code: -1,
+                msg: 'sorry，数据请求失败，请刷新页面重新尝试'
+            }
+            ctx.body = res
+        }
+    } catch (err) {
+        console.log(err)
+        const res = {
+            code: -1,
+            msg: 'sorry，数据请求失败，请刷新页面重新尝试'
+        }
+        ctx.body = res
+    }
+});
 
 module.exports = router

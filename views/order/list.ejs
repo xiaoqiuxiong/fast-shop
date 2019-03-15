@@ -1,83 +1,173 @@
-<% include ../public/index_header %>
+<!doctype html>
+<html class="x-admin-sm">
+<% include ../public/iframe_header %>
 
 <body>
-    <% include ../public/navbar_wrapper %>
-    <% include ../public/hui_aside %>
-    <!--/_menu 作为公共模版分离出去-->
-    <section class="Hui-article-box">
-        <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> <a href="/" class="maincolor">首页</a> <span class="c-gray en">&gt;</span>
-            <%= mainTitle %> <span class="c-gray en">&gt;</span>
-            <%= subTitle %> <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
-        <div class="Hui-article">
-            <article class="cl pd-20">
-                <div class="text-c"> 日期范围：
-                    <input type="text" onfocus="WdatePicker({maxDate:'#F{$dp.$D(\'logmax\')||\'%y-%M-%d\'}'})" id="logmin" class="input-text Wdate" style="width:120px;">
-                    -
-                    <input type="text" onfocus="WdatePicker({minDate:'#F{$dp.$D(\'logmin\')}',maxDate:'%y-%M-%d'})" id="logmax" class="input-text Wdate" style="width:120px;">
-                    <input type="text" name="" id="" placeholder="日志名称" style="width:250px" class="input-text">
-                    <button name="" id="" class="btn btn-success" type="submit"><i class="Hui-iconfont">&#xe665;</i> 搜日志</button>
+    <div class="x-body">
+        <div class="layui-row">
+            <form class="layui-form layui-col-md12 x-so" style="margin-bottom: 10px" onsubmit="return saveReport();">
+                <div class="layui-input-inline">
+                    <select name="city" lay-verify="required">
+                        <option value="">请选择产品分类</option>
+                        <% classifys.forEach(function(e){ %>
+                        <option value="<%= e._id %>">
+                            <%= e.name %>
+                        </option>
+                        <% }); %>
+                    </select>
                 </div>
-                <div class="cl pd-5 bg-1 bk-gray mt-20">
-                    <span class="l">
-                <a href="javascript:;" onclick="datadel()" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a>
-                </span>
-                    <span class="r">共有数据：<strong>54</strong> 条</span>
+                <div class="layui-input-inline">
+                    <select name="city" lay-verify="required">
+                        <option value="">请选择产品品牌</option>
+                        <% brands.forEach(function(e){ %>
+                        <option value="<%= e._id %>">
+                            <%= e.name %>
+                        </option>
+                        <% }); %>
+                    </select>
                 </div>
-                <div class="mt-10">
-                    <table class="table table-border table-bordered table-bg table-hover table-sort">
-                        <thead>
-                            <tr class="text-c">
-                                <th width="25"><input type="checkbox" name="" value=""></th>
-                                <th width="80">ID</th>
-                                <th width="100">类型</th>
-                                <th>内容</th>
-                                <th width="17%">用户名</th>
-                                <th width="120">客户端IP</th>
-                                <th width="120">时间</th>
-                                <th width="70">操作</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr class="text-c">
-                                <td><input type="checkbox" value="" name=""></td>
-                                <td>15686</td>
-                                <td>1</td>
-                                <td>登录成功!</td>
-                                <td>admin</td>
-                                <td>61.233.7.80</td>
-                                <td>2014-6-11 11:11:42</td>
-                                <td><a title="详情" href="javascript:;" onclick="system_log_show(this,'10001')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe665;</i></a>
-                                    <a title="删除" href="javascript:;" onclick="system_log_del(this,'10001')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;</i></a></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="layui-input-inline">
+                    <input type="text" name="searchData" placeholder="请输入产品编号、标题" autocomplete="off" class="layui-input ">
                 </div>
-                <div id="pageNav" class="pageNav"></div>
-            </article>
+                <button type="submit" class="layui-btn" lay-filter="sreach"><i class="layui-icon">&#xe615;</i></button>
+            </form>
         </div>
-    </section>
-    <% include ../public/index_footer %>
-    <!--请在下方写此页面业务相关的脚本-->
-    <script type="text/javascript" src="lib/My97DatePicker/4.8/WdatePicker.js"></script>
-    <script type="text/javascript" src="lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
-    <script type="text/javascript" src="lib/laypage/1.2/laypage.js"></script>
-    <script type="text/javascript">
-    $('.table-sort').dataTable({
-        "lengthMenu": false, //显示数量选择 
-        "bFilter": false, //过滤功能
-        "bPaginate": false, //翻页信息
-        "bInfo": false, //数量信息
-        "aaSorting": [
-            [1, "desc"]
-        ], //默认第几个排序
-        "bStateSave": true, //状态保存
-        "aoColumnDefs": [
-            //{"bVisible": false, "aTargets": [ 3 ]} //控制列的隐藏显示
-            { "orderable": false, "aTargets": [0, 7] } // 制定列不参与排序
-        ]
+        <table class="layui-hide" id="demo" lay-filter="test"></table>
+    </div>
+    <script type="text/html" id="toolbar">
+        <div class="layui-table-tool-temp">
+            <div class="layui-inline" lay-event="delete"><i class="layui-icon layui-icon-delete"></i></div>
+            <div onclick="x_admin_show('添加产品','/goods/goods_add')" class="layui-inline" lay-event="add"><i class="layui-icon layui-icon-add-1"></i></div>
+        </div>
+</script>
+    <script type="text/html" id="barDemo">
+        <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="detail">查看</a>
+  <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+  <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+    <script>
+    layui.use(['laydate', 'table', 'layer'], function() {
+        var laydate = layui.laydate,
+            table = layui.table,
+            layer = layui.layer;
+
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#start' //指定元素
+        });
+
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#end' //指定元素
+        });
+
+        //第一个实例
+        var tableIns = table.render({
+            elem: '#demo',
+            url: '/api_admin/goods',
+            page: true,
+            toolbar: '#toolbar',
+            cols: [
+                [
+                    { type: 'checkbox', fixed: 'left' },
+                    { field: 'id', title: '编号', width: 60 },
+                    {
+                        field: 'img',
+                        title: '产品主图',
+                        width: 100,
+                        align: 'center',
+                        templet: function(d) {
+                            return `<img width="60" height="60" src="${d.img}" alt="" />`
+                        }
+                    },
+                    { field: 'title', title: '标题', width: 100 },
+                    {
+                        field: 'brand',
+                        title: '品牌',
+                        width: 100,
+                        templet: function(d) {
+                            return d.brand.name
+                        }
+                    },
+                    {
+                        field: 'classify',
+                        title: '分类',
+                        width: 100,
+                        templet: function(d) {
+                            return d.classify.name
+                        }
+                    },
+                    { field: 'price', title: '价格 (元)', width: 100 },
+                    { field: 'cost', title: '成本价 (元)', width: 100 },
+                    { field: 'pv', title: '点击量', width: 100 },
+                    { field: 'sell', title: '销量', width: 100 },
+                    { field: 'introduce', title: '介绍' },
+                    { title: '操作', align: 'center', toolbar: '#barDemo', width: 200, fixed: 'right' }
+                ]
+            ]
+        });
+
+        //监听头工具栏事件
+        table.on('toolbar(test)', function(obj) {
+            var checkStatus = table.checkStatus(obj.config.id),
+                data = checkStatus.data; //获取选中的数据
+            switch (obj.event) {
+                case 'delete':
+                    if (data.length === 0) {
+                        layer.msg('请选择需要删除的产品');
+                    } else {
+                        const ids = []
+                        for (var value of data) {
+                            ids.push(value.id)
+                        }
+                        del(ids)
+                    }
+                    break;
+            };
+        });
+
+        //监听行工具事件
+        table.on('tool(test)', function(obj) {
+            var data = obj.data,
+                layEvent = obj.event;
+            if (layEvent === 'del') {
+                del([data.id])
+            } else if (layEvent === 'detail') {
+                x_admin_show('查看产品', '/goods/goods_show?id=' + data.id)
+            } else if (layEvent === 'edit') {
+                x_admin_show('编辑产品', '/goods/goods_add?id=' + data.id)
+            }
+        });
+
+        function del(ids) {
+            layer.confirm('确认要删除吗？', function(index) {
+                const idsUrl = ids.join(',')
+                $.get("/api_admin/goods/del?ids=" + idsUrl, function(data, status) {
+                    if (data.code === 0) {
+                        layer.msg(data.msg, { icon: 1 });
+                        tableIns.reload();
+                    } else {
+                        layer.msg(data.msg);
+                    }
+                });
+            });
+        };
+
+        window.saveReport = function() {
+            const searchData = $('input[name="searchData"]').val()
+            tableIns.reload({
+                where: {
+                    searchData: searchData
+                },
+                page: {
+                    curr: 1
+                }
+            });
+            return false;
+        }
     });
     </script>
-    <!--/请在上方写此页面业务相关的脚本-->
+    <% include ../public/iframe_footer %>
 </body>
 
 </html>
