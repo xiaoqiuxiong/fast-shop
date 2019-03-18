@@ -36,30 +36,23 @@
     </div>
     <script type="text/html" id="toolbar">
         <div class="layui-table-tool-temp">
-            <div class="layui-inline" lay-event="delete"><i class="layui-icon layui-icon-delete"></i></div>
-<!--             <div onclick="x_admin_show('添加产品','/goods/goods_add')" class="layui-inline" lay-event="add"><i class="layui-icon layui-icon-add-1"></i></div> -->
+            <div title="批量关闭" class="layui-inline" lay-event="close"><i class="layui-icon layui-icon-close"></i></div>
         </div>
 </script>
     <script type="text/html" id="barDemo">
+        {{#  if(d.state == 0 || d.state == 10){ }}
+          <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="detail">查看</a>
+        {{#  } else { }}
         <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="detail">查看</a>
-  <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-  <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+        <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="close">关闭</a>
+        {{#  } }} 
+        
 </script>
     <script>
     layui.use(['laydate', 'table', 'layer'], function() {
-        var laydate = layui.laydate,
-            table = layui.table,
+        var table = layui.table,
             layer = layui.layer;
-
-        //执行一个laydate实例
-        laydate.render({
-            elem: '#start' //指定元素
-        });
-
-        //执行一个laydate实例
-        laydate.render({
-            elem: '#end' //指定元素
-        });
 
         //第一个实例
         var tableIns = table.render({
@@ -74,7 +67,7 @@
                     {
                         field: 'type',
                         title: '订单类型',
-                        width: 120,
+                        width: 80,
                         templet(d) {
                             if (d.type == 1) {
                                 return '购买订单'
@@ -85,21 +78,22 @@
                             }
                         }
                     },
-                    { field: 'amount', title: '商品总数（件）', width: 120 },
+                    { field: 'amount', title: '商品总数', width: 80 },
                     { field: 'total_price', title: '订单总价（元）', width: 120, templet(d) { return parseFloat(d.total_price).toFixed(2) } },
-                    { field: 'freight', title: '运费（元）', width: 100, templet(d) { return parseFloat(d.freight).toFixed(2) } },
-                    { field: 'leave_word', title: '订单留言', width: 200 },
+                    { field: 'leave_word', title: '订单留言', width: 140 },
                     {
                         field: 'address',
-                        title: '收货人信息',
+                        title: '收货人',
+                        width: 80,
                         templet(d) {
-                            return d.address.name + ' ' + d.address.phone + ' ' + d.address.province + ' ' + d.address.city + ' ' + d.address.towns + ' ' + d.address.detail
+                            return d.address.name
                         }
                     },
                     {
                         field: 'state',
                         title: '订单状态',
-                        width: 120,
+                        width: 100,
+                        align: 'center',
                         templet: function(d) {
                             switch (d.state) {
                                 // 已关闭：0
@@ -140,7 +134,14 @@
                             }
                         }
                     },
-                    { title: '操作', align: 'center', toolbar: '#barDemo', width: 200, fixed: 'right' }
+                    {
+                        field: 'addtime',
+                        title: '添加时间',
+                        templet: function(d) {
+                            return new Date(d.addtime).toLocaleDateString().replace(/\//g, "-") + " " + new Date(d.addtime).toTimeString().substr(0, 8)
+                        }
+                    },
+                    { title: '操作', toolbar: '#barDemo', width: 200, fixed: 'right' }
                 ]
             ]
         });
@@ -150,13 +151,13 @@
             var checkStatus = table.checkStatus(obj.config.id),
                 data = checkStatus.data; //获取选中的数据
             switch (obj.event) {
-                case 'delete':
+                case 'close':
                     if (data.length === 0) {
-                        layer.msg('请选择需要删除的产品');
+                        layer.msg('请选择需要关闭的订单');
                     } else {
                         const ids = []
                         for (var value of data) {
-                            ids.push(value.id)
+                            ids.push(value._id)
                         }
                         del(ids)
                     }
@@ -168,19 +169,19 @@
         table.on('tool(test)', function(obj) {
             var data = obj.data,
                 layEvent = obj.event;
-            if (layEvent === 'del') {
-                del([data.id])
+            if (layEvent === 'close') {
+                del([data._id])
             } else if (layEvent === 'detail') {
-                x_admin_show('查看产品', '/goods/goods_show?id=' + data.id)
+                x_admin_show('查看订单', '/order/order_show?id=' + data._id)
             } else if (layEvent === 'edit') {
-                x_admin_show('编辑产品', '/goods/goods_add?id=' + data.id)
+                x_admin_show('编辑订单', '/order/order_add?id=' + data._id)
             }
         });
 
         function del(ids) {
-            layer.confirm('确认要删除吗？', function(index) {
+            layer.confirm('确认要关闭订单吗？', function(index) {
                 const idsUrl = ids.join(',')
-                $.get("/api_admin/goods/del?ids=" + idsUrl, function(data, status) {
+                $.get("/api_admin/order/close?ids=" + idsUrl, function(data, status) {
                     if (data.code === 0) {
                         layer.msg(data.msg, { icon: 1 });
                         tableIns.reload();

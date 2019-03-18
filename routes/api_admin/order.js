@@ -41,12 +41,12 @@ router.get('/', async ctx => {
         page = Math.max(page, 1)
         const skip = (page - 1) * limit
         let orders = await Order.find({
-            // $or: [
-            //     { id: ({ $regex: reg }) },
-            //     { title: { $regex: reg } }
-            // ]
-        }).sort({ _id: 1 }).limit(limit).skip(skip)
-        .populate(['address', 'buyid'])
+                // $or: [
+                //     { id: ({ $regex: reg }) },
+                //     { title: { $regex: reg } }
+                // ]
+            }).sort({ _id: 1 }).limit(limit).skip(skip)
+            .populate(['address', 'buyid'])
         const res = {
             code: 0,
             msg: '',
@@ -75,7 +75,7 @@ router.get('/add', async (ctx, next) => {
     const return_goods = ctx.query.return_goods || null
     // 购买商品
     let goods = JSON.parse(ctx.query.goods) || []
-    goods = goods.map(function(item,key,ary) {  
+    goods = goods.map(function(item, key, ary) {
         return {
             id: mongoose.Types.ObjectId(item.id),
             count: item.count,
@@ -154,31 +154,36 @@ router.get('/add', async (ctx, next) => {
     }
 })
 
-// 删除
-router.get('/del', async ctx => {
+// 关闭
+router.get('/close', async (ctx, next) => {
     const ids = ctx.query.ids.split(',')
     try {
-        if (await Goods.remove({ id: { $in: ids } })) {
-            const res = {
-                code: 0,
-                msg: '删除成功'
+        let num = 0
+        for(let val of ids) {
+            const doc =await Order.findByIdAndUpdate(val, { state: 0 })
+            if (doc) {
+                num++
             }
-            ctx.body = res
-        } else {
-            const res = {
-                code: -1,
-                msg: 'sorry，数据请求失败，请刷新页面重新尝试'
-            }
-            ctx.body = res
         }
+        if (num == ids.length) {
+            ctx.body = {
+                code: 0,
+                msg: '关闭成功'
+            }
+            return false
+        }
+        ctx.body = {
+            code: 1,
+            msg: '关闭失败'
+        }
+        return false
     } catch (err) {
         console.log(err)
-        const res = {
+        ctx.body = {
             code: -1,
-            msg: 'sorry，数据请求失败，请刷新页面重新尝试'
+            msg: '操作失败，请重新保存'
         }
-        ctx.body = res
     }
-});
+})
 
 module.exports = router
