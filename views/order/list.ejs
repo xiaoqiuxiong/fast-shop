@@ -7,27 +7,27 @@
         <div class="layui-row">
             <form class="layui-form layui-col-md12 x-so" style="margin-bottom: 10px" onsubmit="return saveReport();">
                 <div class="layui-input-inline">
-                    <select name="city" lay-verify="required">
-                        <option value="">请选择产品分类</option>
-                        <% classifys.forEach(function(e){ %>
-                        <option value="<%= e._id %>">
-                            <%= e.name %>
-                        </option>
-                        <% }); %>
+                    <select name="type" lay-verify="required">
+                        <option value="">请选择订单类型</option>
+                        <option value="1">购买订单</option>
+                        <option value="2">退货订单</option>
                     </select>
                 </div>
                 <div class="layui-input-inline">
-                    <select name="city" lay-verify="required">
-                        <option value="">请选择产品品牌</option>
-                        <% brands.forEach(function(e){ %>
-                        <option value="<%= e._id %>">
-                            <%= e.name %>
-                        </option>
-                        <% }); %>
+                    <select name="state" lay-verify="required">
+                        <option value="">请选择订单状态</option>
+                        <option value="0">已关闭</option>
+                        <option value="1">待支付</option>
+                        <option value="2">待发货</option>
+                        <option value="3">待确认收货</option>
+                        <option value="4">待退货</option>
+                        <option value="5">待退款</option>
+                        <option value="6">已退款</option>
+                        <option value="10">已完成</option>
                     </select>
                 </div>
                 <div class="layui-input-inline">
-                    <input type="text" name="searchData" placeholder="请输入产品编号、标题" autocomplete="off" class="layui-input ">
+                    <input type="text" name="searchData" placeholder="请输入订单ID" autocomplete="off" class="layui-input ">
                 </div>
                 <button type="submit" class="layui-btn" lay-filter="sreach"><i class="layui-icon">&#xe615;</i></button>
             </form>
@@ -37,7 +37,7 @@
     <script type="text/html" id="toolbar">
         <div class="layui-table-tool-temp">
             <div class="layui-inline" lay-event="delete"><i class="layui-icon layui-icon-delete"></i></div>
-            <div onclick="x_admin_show('添加产品','/goods/goods_add')" class="layui-inline" lay-event="add"><i class="layui-icon layui-icon-add-1"></i></div>
+<!--             <div onclick="x_admin_show('添加产品','/goods/goods_add')" class="layui-inline" lay-event="add"><i class="layui-icon layui-icon-add-1"></i></div> -->
         </div>
 </script>
     <script type="text/html" id="barDemo">
@@ -64,44 +64,82 @@
         //第一个实例
         var tableIns = table.render({
             elem: '#demo',
-            url: '/api_admin/goods',
+            url: '/api_admin/order',
             page: true,
             toolbar: '#toolbar',
             cols: [
                 [
                     { type: 'checkbox', fixed: 'left' },
-                    { field: 'id', title: '编号', width: 60 },
+                    { field: '_id', title: '订单号', width: 200 },
                     {
-                        field: 'img',
-                        title: '产品主图',
-                        width: 100,
-                        align: 'center',
-                        templet: function(d) {
-                            return `<img width="60" height="60" src="${d.img}" alt="" />`
+                        field: 'type',
+                        title: '订单类型',
+                        width: 120,
+                        templet(d) {
+                            if (d.type == 1) {
+                                return '购买订单'
+                            } else if (d.type == 2) {
+                                return '退货订单'
+                            } else {
+                                return '未知订单'
+                            }
                         }
                     },
-                    { field: 'title', title: '标题', width: 100 },
+                    { field: 'amount', title: '商品总数（件）', width: 120 },
+                    { field: 'total_price', title: '订单总价（元）', width: 120, templet(d) { return parseFloat(d.total_price).toFixed(2) } },
+                    { field: 'freight', title: '运费（元）', width: 100, templet(d) { return parseFloat(d.freight).toFixed(2) } },
+                    { field: 'leave_word', title: '订单留言', width: 200 },
                     {
-                        field: 'brand',
-                        title: '品牌',
-                        width: 100,
-                        templet: function(d) {
-                            return d.brand.name
+                        field: 'address',
+                        title: '收货人信息',
+                        templet(d) {
+                            return d.address.name + ' ' + d.address.phone + ' ' + d.address.province + ' ' + d.address.city + ' ' + d.address.towns + ' ' + d.address.detail
                         }
                     },
                     {
-                        field: 'classify',
-                        title: '分类',
-                        width: 100,
+                        field: 'state',
+                        title: '订单状态',
+                        width: 120,
                         templet: function(d) {
-                            return d.classify.name
+                            switch (d.state) {
+                                // 已关闭：0
+                                // 待支付：1
+                                // 待发货：2 
+                                // 待确认收货：3
+                                // 待退货：4
+                                // 待退款：5
+                                // 已退款：6
+                                // 已完成：10
+                                case 0:
+                                    return '已关闭'
+                                    break;
+                                case 1:
+                                    return '待支付'
+                                    break;
+                                case 2:
+                                    return '待发货'
+                                    break;
+                                case 3:
+                                    return '待确认收货'
+                                    break;
+                                case 4:
+                                    return '待退货'
+                                    break;
+                                case 5:
+                                    return '待退款'
+                                    break;
+                                case 6:
+                                    return '已退款'
+                                    break;
+                                case 10:
+                                    return '已完成'
+                                    break;
+                                default:
+                                    return '未知订单状态'
+                                    break;
+                            }
                         }
                     },
-                    { field: 'price', title: '价格 (元)', width: 100 },
-                    { field: 'cost', title: '成本价 (元)', width: 100 },
-                    { field: 'pv', title: '点击量', width: 100 },
-                    { field: 'sell', title: '销量', width: 100 },
-                    { field: 'introduce', title: '介绍' },
                     { title: '操作', align: 'center', toolbar: '#barDemo', width: 200, fixed: 'right' }
                 ]
             ]

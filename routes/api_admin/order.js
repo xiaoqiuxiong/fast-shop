@@ -11,7 +11,7 @@ function isEmpty(obj) {
     }
 }
 
-router.prefix('/api_web/order')
+router.prefix('/api_admin/order')
 
 // 列表
 router.get('/', async ctx => {
@@ -23,10 +23,10 @@ router.get('/', async ctx => {
     const reg = new RegExp(searchData, 'i')
     try {
         const total = await Order.count({
-            $or: [
-                { id: { $regex: reg } },
-                { title: { $regex: reg } }
-            ]
+            // $or: [
+            //     { id: { $regex: reg } },
+            //     { title: { $regex: reg } }
+            // ]
         })
         if (!isEmpty(total)) {
             const res = {
@@ -41,12 +41,12 @@ router.get('/', async ctx => {
         page = Math.max(page, 1)
         const skip = (page - 1) * limit
         let orders = await Order.find({
-            $or: [
-                { id: ({ $regex: reg }) },
-                { title: { $regex: reg } }
-            ]
+            // $or: [
+            //     { id: ({ $regex: reg }) },
+            //     { title: { $regex: reg } }
+            // ]
         }).sort({ _id: 1 }).limit(limit).skip(skip)
-        // .populate(['brand', 'classify'])
+        .populate(['address', 'buyid'])
         const res = {
             code: 0,
             msg: '',
