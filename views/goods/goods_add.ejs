@@ -12,9 +12,7 @@
                     <select lay-verify="required" name="classify" lay-filter="aihao">
                         <option></option>
                         <% classifys.forEach(function(e){ %>
-                        <option <%= goodsInfo ? (JSON.stringify(goodsInfo.classify._id) == JSON.stringify(e._id) ? 'selected' : '' ):'' %> value="<%= e._id %>">
-                            <%= e.name %>
-                        </option>
+                        <option <%=goodsInfo ? (JSON.stringify(goodsInfo.classify._id)==JSON.stringify(e._id) ? 'selected' : '' ):'' %> value="<%= e._id %>"><%= e.name %></option>
                         <% }); %>
                     </select>
                 </div>
@@ -25,9 +23,7 @@
                     <select lay-verify="required" name="brand" lay-filter="aihao">
                         <option></option>
                         <% brands.forEach(function(e){ %>
-                        <option <%= goodsInfo ? (JSON.stringify(goodsInfo.brand._id) == JSON.stringify(e._id) ? 'selected' : '' ):'' %> value="<%= e._id %>">
-                            <%= e.name %>
-                        </option>
+                        <option <%=goodsInfo ? (JSON.stringify(goodsInfo.brand._id)==JSON.stringify(e._id) ? 'selected' : '' ):'' %> value="<%= e._id %>"><%= e.name %></option>
                         <% }); %>
                     </select>
                 </div>
@@ -57,6 +53,12 @@
                     <input value="<%= goodsInfo?goodsInfo.cost:'' %>" type="text" name="cost" placeholder="请输入" autocomplete="off" class="layui-input">
                 </div>
                 <div class="layui-form-mid layui-word-aux">元</div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">是否上架</label>
+                <div class="layui-input-inline">
+                    <input type="checkbox" name="is_sell" lay-skin="switch" <%=goodsInfo?(goodsInfo.is_sell? 'checked' : '' ):'checked' %> >
+                </div>
             </div>
             <div class="layui-form-item">
                 <label class="layui-form-label"><span class="x-red">*</span>图片展示</label>

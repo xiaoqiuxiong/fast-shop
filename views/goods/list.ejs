@@ -77,7 +77,7 @@
                         width: 100,
                         align: 'center',
                         templet: function(d) {
-                            return `<img width="60" height="60" src="${d.img}" alt="" />`
+                            return d.img[0] ? `<img width="60" height="60" src="${d.img}" alt="" />` : `<img width="60" height="60" src="/images/logo.jpg" alt="" />`
                         }
                     },
                     { field: 'title', title: '标题', width: 100 },
@@ -101,6 +101,14 @@
                     { field: 'cost', title: '成本价 (元)', width: 100 },
                     { field: 'pv', title: '点击量', width: 100 },
                     { field: 'sell', title: '销量', width: 100 },
+                    {
+                        field: 'is_sell',
+                        title: '是否上架',
+                        width: 100,
+                        templet(d) {
+                            return d.is_sell ? '是' : '否'
+                        }
+                    },
                     { field: 'introduce', title: '介绍' },
                     { title: '操作', align: 'center', toolbar: '#barDemo', width: 200, fixed: 'right' }
                 ]

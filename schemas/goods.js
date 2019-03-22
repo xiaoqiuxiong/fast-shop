@@ -62,5 +62,15 @@ module.exports = mongoose.model('Goods', new Schema({
 	sell: {
 		type: Number,
 		default: 0
+	},
+	// 是否上架
+	is_sell: {
+		type: Boolean,
+		default: true
+	},
+	// 是否删除
+	is_del: {
+		type: Boolean,
+		default: false
 	}
 }))

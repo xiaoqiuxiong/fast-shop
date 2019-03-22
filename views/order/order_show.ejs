@@ -1,0 +1,215 @@
+<!doctype html>
+<html class="x-admin-sm">
+<% include ../public/iframe_header %>
+
+<body>
+    <div class="x-body">
+        <% if(orderInfo){ %>
+        <div class="layui-form layui-form-view">
+            <fieldset class="layui-elem-field">
+                <legend>基本信息</legend>
+                <div class="layui-field-box">
+                    <div class="layui-form-item">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">订单编号：</label>
+                            <div class="layui-form-mid layui-word-aux">
+                                <%= orderInfo._id %>
+                            </div>
+                        </div>
+                        <label class="layui-form-label">订单状态：</label>
+                        <div class="layui-form-mid layui-word-aux">
+                            <!-- 已关闭：0 -->
+                            <!-- 待支付：1 -->
+                            <!-- 待发货：2  -->
+                            <!-- 待确认收货：3 -->
+                            <!-- 待退货：4 -->
+                            <!-- 待退款：5 -->
+                            <!-- 已退款：6 -->
+                            <!-- 已完成：10 -->
+                            <% if (orderInfo.state == 0) { %>
+                            已关闭
+                            <% } else if(orderInfo.state == 1) { %>
+                            待支付
+                            <% } else if(orderInfo.state == 2) { %>
+                            待发货
+                            <% } else if(orderInfo.state == 3) { %>
+                            待确认收货
+                            <% } else if(orderInfo.state == 4) { %>
+                            待退货
+                            <% } else if(orderInfo.state == 5) { %>
+                            待退款
+                            <% } else if(orderInfo.state == 6) { %>
+                            已退款
+                            <% } else if(orderInfo.state == 10) { %>
+                            已完成
+                            <% } else { %>
+                            未知状态
+                            <% } %>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">购买用户：</label>
+                        <div class="layui-form-mid layui-word-aux">
+                            <%= orderInfo.buyid.nickname %>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">下单时间：</label>
+                        <div class="layui-form-mid layui-word-aux">
+                            <%= new Date(orderInfo.addtime).toLocaleDateString().replace(/\//g, "-") + " " + new Date(orderInfo.addtime).toTimeString().substr(0, 8) %>
+                        </div>
+                    </div>
+                    <% if (orderInfo.state > 1) { %>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label" style="line-height: 40px">支付方式：</label>
+                        <div class="layui-form-mid layui-word-aux" style="line-height: 40px">
+                            <% if (orderInfo.pay_type == 4) { %>
+                            其他支付
+                            <% } else if(orderInfo.pay_type == 1) { %>
+                            <img width="40" src="/images/wechat_pay.png" alt=""> 微信支付
+                            <% } else if(orderInfo.pay_type == 2) { %>
+                            <img width="40" src="/images/alipay_pay.png" alt=""> 支付宝支付
+                            <% } else if(orderInfo.pay_type == 3) { %>
+                            <img width="40" src="/images/unionpay_pay.png" alt=""> 银联支付
+                            <% } %>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">支付时间：</label>
+                        <div class="layui-form-mid layui-word-aux">
+                            <%= new Date(orderInfo.pay_time).toLocaleDateString().replace(/\//g, "-") + " " + new Date(orderInfo.pay_time).toTimeString().substr(0, 8) %>
+                        </div>
+                    </div>
+                    <% if (orderInfo.state > 2) { %>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">发货时间：</label>
+                        <div class="layui-form-mid layui-word-aux">
+                            <%= new Date(orderInfo.shipments_time).toLocaleDateString().replace(/\//g, "-") + " " + new Date(orderInfo.shipments_time).toTimeString().substr(0, 8) %>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">快递单号：</label>
+                        <div class="layui-form-mid layui-word-aux">
+                            <%= orderInfo.tracking_number %>
+                        </div>
+                    </div>
+                    <% } %>
+                    <% } %>
+                </div>
+            </fieldset>
+            <fieldset class="layui-elem-field">
+                <legend>备注信息</legend>
+                <div class="layui-field-box">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">客户留言：</label>
+                        <div class="layui-form-mid layui-word-aux">
+                            <%= orderInfo.leave_word %>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+            <fieldset class="layui-elem-field">
+                <legend>发货信息</legend>
+                <div class="layui-field-box">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">发货姓名：</label>
+                        <div class="layui-form-mid layui-word-aux">
+                            <%= orderInfo.address.name %>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">发货手机：</label>
+                        <div class="layui-form-mid layui-word-aux">
+                            <%= orderInfo.address.phone %>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">发货地址：</label>
+                        <div class="layui-form-mid layui-word-aux">
+                            <%= orderInfo.address.province %>
+                            <%= orderInfo.address.city %>
+                            <%= orderInfo.address.towns %>
+                            <%= orderInfo.address.detail %>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+            <fieldset class="layui-elem-field">
+                <legend>商品信息</legend>
+                <div class="layui-field-box">
+                    <table class="layui-table">
+                        <thead>
+                            <tr>
+                                <th>商品首图</th>
+                                <th>商品编号</th>
+                                <th>商品名称</th>
+                                <th>商品分类</th>
+                                <th>商品品牌</th>
+                                <th>商品价格（元）</th>
+                                <th>商品数量</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% orderInfo.goods.forEach(goods=>{ %>
+                            <tr>
+                                <td><img height="40" src="<%= goods.data.img %>" alt=""></td>
+                                <td>
+                                    <%= goods.data.id %>
+                                </td>
+                                <td>
+                                    <%= goods.data.title %>
+                                </td>
+                                <td>
+                                    <%= goods.data.classify.name %>
+                                </td>
+                                <td>
+                                    <%= goods.data.brand.name %>
+                                </td>
+                                <td>
+                                    <%= parseFloat(goods.data.price).toFixed(2) %>
+                                </td>
+                                <td>
+                                    <%= goods.count %>
+                                </td>
+                            </tr>
+                            <% }); %>
+                            <tr>
+                                <td colspan="7">商品总数量：
+                                    <%= orderInfo.amount %>件 合计： ¥
+                                    <%= parseFloat(orderInfo.total_price - orderInfo.freight).toFixed(2) %>元</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </fieldset>
+            <fieldset class="layui-elem-field">
+                <legend>费用信息</legend>
+                <div class="layui-field-box">
+                    <p>商品总金额 ¥
+                        <%= parseFloat(orderInfo.total_price - orderInfo.freight).toFixed(2) %> + 配送费用 ¥
+                        <%= parseFloat(orderInfo.freight).toFixed(2) %> = 应付款金额： <strong style="color: red;font-size: 18px">¥<%= parseFloat(orderInfo.total_price).toFixed(2) %></strong></p>
+                </div>
+            </fieldset>
+            <% if(orderInfo.state === 2 || orderInfo.state === 1){ %>
+            <fieldset class="layui-elem-field">
+                <legend>订单操作</legend>
+                <div class="layui-field-box">
+                    <% if(orderInfo.state === 2){ %>
+                    <button class="layui-btn">订单发货</button>
+                    <% }else if(orderInfo.state === 1){ %>
+                    <button onclick="window.parent.del_win(['<%= orderInfo._id  %>'])" class="layui-btn layui-btn-danger">关闭订单</button>
+                    <% } %>
+                </div>
+
+            </fieldset>
+            <% } %>
+            <button onclick="window.parent.test_win();">6666666</button>
+        </div>
+        <% }else{ %>
+        对不起，暂时查询不到该订单详情数据！
+        <% } %>
+    </div>
+    <% include ../public/iframe_footer %>
+</body>
+
+</html>

@@ -32,7 +32,8 @@ router.get('/', async ctx => {
             $or: [
                 { id: { $regex: reg } },
                 { title: { $regex: reg } }
-            ]
+            ],
+            is_del: false
         })
         if (!isEmpty(total)) {
             const res = {
@@ -50,7 +51,8 @@ router.get('/', async ctx => {
             $or: [
                 { id: ({ $regex: reg }) },
                 { title: { $regex: reg } }
-            ]
+            ],
+            is_del: false
         }).sort({ id: 1 }).limit(limit).skip(skip).populate(['brand', 'classify'])
         const res = {
             code: 0,
@@ -80,6 +82,12 @@ router.get('/add', async (ctx, next) => {
     let price = ctx.query.price
     let cost = ctx.query.cost || ctx.query.price
     let introduce = ctx.query.introduce
+    let is_sell = ctx.query.is_sell || null
+    if(is_sell == 'on'){
+        is_sell = true
+    }else{
+        is_sell = false
+    }
     let id = ctx.query.id || null
     try {
         if (id) {
@@ -91,6 +99,7 @@ router.get('/add', async (ctx, next) => {
                 img,
                 price,
                 cost,
+                is_sell,
                 introduce
             })
             if (goods) {
@@ -108,7 +117,6 @@ router.get('/add', async (ctx, next) => {
                 return false
             }
         } else {
-
             let ids = await Ids.find({ id: 1 })
             let goods_num = 0
             if (!isEmpty(ids)) {
@@ -126,6 +134,7 @@ router.get('/add', async (ctx, next) => {
                 img,
                 price,
                 cost,
+                is_sell,
                 introduce
             }).save()
             if (isEmpty(doc)) {
@@ -150,11 +159,11 @@ router.get('/add', async (ctx, next) => {
 })
 
 
-// 删除
+// 删除(假删除)
 router.get('/del', async ctx => {
     const ids = ctx.query.ids.split(',')
     try {
-        if (await Goods.remove({ id: { $in: ids } })) {
+        if (await Goods.updateMany({ id: { $in: ids } }, { is_del: true })) {
             const res = {
                 code: 0,
                 msg: '删除成功'

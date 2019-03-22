@@ -40,11 +40,8 @@
         </div>
 </script>
     <script type="text/html" id="barDemo">
-        {{#  if(d.state == 0 || d.state == 10){ }}
-          <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="detail">查看</a>
-        {{#  } else { }}
         <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="detail">查看</a>
-        <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+        {{#  if(d.state == 1){ }}
         <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="close">关闭</a>
         {{#  } }} 
         
@@ -141,7 +138,7 @@
                             return new Date(d.addtime).toLocaleDateString().replace(/\//g, "-") + " " + new Date(d.addtime).toTimeString().substr(0, 8)
                         }
                     },
-                    { title: '操作', toolbar: '#barDemo', width: 200, fixed: 'right' }
+                    { title: '操作', toolbar: '#barDemo', width: 140, fixed: 'right' }
                 ]
             ]
         });
@@ -178,7 +175,7 @@
             }
         });
 
-        function del(ids) {
+       window.del_win = function(ids) {
             layer.confirm('确认要关闭订单吗？', function(index) {
                 const idsUrl = ids.join(',')
                 $.get("/api_admin/order/close?ids=" + idsUrl, function(data, status) {
@@ -189,6 +186,12 @@
                         layer.msg(data.msg);
                     }
                 });
+            });
+        };
+
+         window.test_win = function(ids) {
+            layer.confirm('确认要关闭订单吗？', function(index) {
+                layer.closeAll();
             });
         };
 

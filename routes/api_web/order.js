@@ -46,7 +46,6 @@ router.get('/', async ctx => {
                 { title: { $regex: reg } }
             ]
         }).sort({ _id: 1 }).limit(limit).skip(skip)
-        // .populate(['brand', 'classify'])
         const res = {
             code: 0,
             msg: '',
@@ -71,17 +70,77 @@ router.get('/add', async (ctx, next) => {
     const buyid = ctx.query.buyid
     // 商品总数
     const amount = 0
-    // 退货商品
-    const return_goods = ctx.query.return_goods || null
+    // 总价
+    let total_price = 0
     // 购买商品
     let goods = JSON.parse(ctx.query.goods) || []
-    goods = goods.map(function(item,key,ary) {  
+    goods = goods.map(async (item, key, ary) => {
+        const goodsPrice = await Goods.findOne({ _id: item.id }).price
+        const goodsSubtotal = parseFloat(goodsPrice) * item.count.toFixed(2)
+        total_price += goodsSubtotal
         return {
-            id: mongoose.Types.ObjectId(item.id),
+            id: item.id,
             count: item.count,
-            unit_price: item.unit_price,
-            subtotal: item.subtotal
-        };
+            subtotal: goodsSubtotal
+        }
+    })
+    // 运费
+    const freight = ctx.query.freight
+    // 购买备注
+    const leave_word = ctx.query.leave_word
+    // 收货地址
+    const address = ctx.query.address
+    // 订单状态
+    const state = 1
+    try {
+        let doc = await new Order({
+            buyid,
+            amount,
+            goods,
+            freight,
+            leave_word,
+            total_price,
+            address,
+            state
+        }).save()
+        if (isEmpty(doc)) {
+            ctx.body = {
+                code: 0,
+                msg: '新增成功',
+                data: doc
+            }
+            return false
+        }
+    } catch (err) {
+        console.log(err)
+        ctx.body = {
+            code: -1,
+            msg: '保存失败，请重新保存'
+        }
+    }
+})
+
+// 修改
+router.get('/add', async (ctx, next) => {
+    // 卖家id
+    const buyid = ctx.query.buyid
+    // 商品总数
+    const amount = 0
+    // 退货商品
+    const return_goods = ctx.query.return_goods || null
+    // 总价
+    let total_price = 0
+    // 购买商品
+    let goods = JSON.parse(ctx.query.goods) || []
+    goods = goods.map(async (item, key, ary) => {
+        const goodsPrice = await Goods.findOne({ _id: item.id }).price
+        const goodsSubtotal = parseFloat(goodsPrice) * item.count.toFixed(2)
+        total_price += goodsSubtotal
+        return {
+            id: item.id,
+            count: item.count,
+            subtotal: goodsSubtotal
+        }
     })
     // 运费
     const freight = ctx.query.freight
@@ -89,8 +148,6 @@ router.get('/add', async (ctx, next) => {
     const return_leave_word = ctx.query.return_leave_word || null
     // 购买备注
     const leave_word = ctx.query.leave_word
-    // 总价
-    const total_price = ctx.query.total_price
     // 退货总价
     const return_total_price = ctx.query.return_total_price || 0
     // 收货地址

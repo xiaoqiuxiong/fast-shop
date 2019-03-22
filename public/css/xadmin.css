@@ -653,3 +653,13 @@ table th, table td {
     color: #393D49;
 }
 
+.layui-form-view .layui-form-item{
+    margin-bottom: 0;
+}
+.layui-form-view .layui-text em, .layui-form-view .layui-word-aux{
+    color: #333333 !important;
+}
+
+.layui-form-view .layui-form-label{
+    color: #666666;
+}

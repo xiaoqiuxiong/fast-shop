@@ -55,6 +55,12 @@
                 </div>
             </div>
             <div class="layui-form-item">
+                <label class="layui-form-label">是否上架</label>
+                <div class="layui-form-mid layui-word-aux">
+                    <%= goodsInfo.is_sell ? '是' : '否' %>
+                </div>
+            </div>
+            <div class="layui-form-item">
                 <label class="layui-form-label">首图</label>
                 <div class="layui-form-mid layui-word-aux">
                     <img width="140" src="<%= goodsInfo.img[0] %> " alt="">

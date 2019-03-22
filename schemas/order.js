@@ -11,7 +11,7 @@ module.exports = mongoose.model('Order', new Schema({
 	// 买家id
 	buyid: {
 		type: Schema.Types.ObjectId, 
-		ref: 'User'
+		ref: 'Member'
 	},
 	// 商品总数
 	amount: {
@@ -20,13 +20,11 @@ module.exports = mongoose.model('Order', new Schema({
 	},
 	// 商品列表
 	goods: {
-		type: Array,
-		default: []
+		type: Array
 	},
 	// 退货商品列表
 	return_goods: {
-		type: Array,
-		default: []
+		type: Array
 	},
 	// 配送费
 	freight: {
@@ -35,13 +33,11 @@ module.exports = mongoose.model('Order', new Schema({
 	},
 	// 订单留言
 	leave_word: {
-		type: String,
-		default: ''
+		type: String
 	},
 	// 退货留言
 	return_leave_word: {
-		type: String,
-		default: ''
+		type: String
 	},
 	// 总价
 	total_price: {
@@ -71,9 +67,25 @@ module.exports = mongoose.model('Order', new Schema({
 		type: Number,
 		default: 0
 	},
+	// 物流单号
+	tracking_number: {
+		type: String
+	},
 	// 收货地址
 	address: {
 		type: Schema.Types.ObjectId,
 		ref: 'Address'
+	},
+	// 支付方式(微信 1 、 支付宝 2 、 银联 3 、 其他 4 )
+	pay_type: {
+		type: Number
+	},
+	// 支付时间
+	pay_time: {
+		type: Date
+	},
+	// 发货时间
+	shipments_time: {
+		type: Date
 	}
 }))
