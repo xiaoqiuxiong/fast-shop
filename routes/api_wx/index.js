@@ -16,7 +16,7 @@ function isEmpty(obj) {
     }
 }
 
-router.prefix('/api_web')
+router.prefix('/api_wx')
 
 // 注册
 router.post('/register', async (ctx, next) => {
@@ -81,92 +81,85 @@ router.post('/register', async (ctx, next) => {
     }
 })
 
-// 登录
-router.post('/login', async ctx => {
-    const body = ctx.request.body
-    const phone = body.phone
-    let password = body.password
-
-    try {
-        // 加密模块
-        const crypto = require('crypto')
-        const hash = crypto.createHash('sha1') //'md5'<'sha1'<'sha256'<'sha512  '
-        password = hash.update(password).digest('hex')
-
-        const doc = await Member.findOne({ phone, password }).select("-password")
-        if (doc) {
-            const token = 'Bearer ' + jwt.sign({ data: doc }, 'xiaoqiuxiong', { 'expiresIn': 60 * 60 * 24 })
-            ctx.body = {
-                code: 0,
-                msg: '登录成功',
-                token: token
-            }
-        } else {
-            ctx.body = {
-                code: 1,
-                msg: '手机号码或者密码错误'
-            }
-        }
-    } catch (e) {
-        console.log(e);
-        ctx.body = {
-            code: -1,
-            msg: '登录失败'
-        }
-    }
-});
-
-const generateSkey = (sessionKey) => sha1(wxconfig.appid +  wxconfig.secret + sessionKey);
+const generateSkey = (sessionKey) => sha1(wxconfig.appid + wxconfig.secret + sessionKey);
 
 // 微信登录
-router.post('/wxlogin', async ctx => {
+router.post('/login', async ctx => {
     try {
-        /*// 加密模块
-        const crypto = require('crypto')
-        const hash = crypto.createHash('sha1') //'md5'<'sha1'<'sha256'<'sha512  '
-        password = hash.update(password).digest('hex')
-
-        const doc = await Member.findOne({ phone, password }).select("-password")
-        if (doc) {
-            const token = 'Bearer ' + jwt.sign({ data: doc }, 'xiaoqiuxiong', { 'expiresIn': 60 * 60 * 24 })
-            ctx.body = {
-                code: 0,
-                msg: '登录成功',
-                token: token
-            }
-        } else {
-            ctx.body = {
-                code: 1,
-                msg: '手机号码或者密码错误'
-            }
-        }*/
         const body = ctx.request.body,
             jscode = body.code,
+            rawData = body.rawData,
+            signature = body.signature,
             encryptedData = body.encryptedData,
             iv = body.iv,
             appid = wxconfig.appid,
             secret = wxconfig.secret;
 
+        let ids = await Ids.find({ id: 1 })
+        let member_num = 0
+        if (!isEmpty(ids)) {
+            await new Ids().save()
+        } else {
+            member_num = ids[0].member_num
+        }
+
+        // 检验参数完整性
+        if (!([jscode, encryptedData, iv].every((item, index, array) => {
+                return isEmpty(item);
+            }))) {
+            ctx.body = {
+                code: -1,
+                msg: '登录参数缺失'
+            }
+            return
+        }
+
         const res = await koa2Req(
             `https://api.weixin.qq.com/sns/jscode2session?appid=${appid}&secret=${secret}&js_code=${jscode}&grant_type=authorization_code`
         )
-        const sessionkey = JSON.parse(res.body).session_key
+        const session_key = JSON.parse(res.body).session_key
 
-        const pc = new WXBizDataCrypt(appid, sessionkey)
+        const pc = new WXBizDataCrypt(appid, session_key)
         const userInfo = pc.decryptData(encryptedData, iv)
 
-        const session = ctx.session = {}
-        
-        session.id = ctx.sessionID = crypto.randomBytes(32).toString('hex')
-        session.skey = generateSkey(sessionkey)
-        session.sessionKey = sessionkey
-        session.userInfo = userInfo
+        const skey = crypto.createHash('sha1').update(session_key).digest('hex')
 
+        const doc = await Member.findOne({ uid: userInfo.openId })
+        if (!doc) {
+            // 添加用户
+            let adddoc = await new Member({
+                id: member_num + 1,
+                uid: userInfo.openId,
+                skey: skey,
+                session_key: session_key,
+                avatarUrl: userInfo.avatarUrl,
+                nickname: userInfo.nickName,
+                gender: parseFloat(userInfo.gender),
+                province: userInfo.province,
+                city: userInfo.city,
+                country: userInfo.country,
+                province: userInfo.province
+            }).save()
+        } else {
+            // 更新用户
+            await Member.findOneAndUpdate({ uid: userInfo.openId }, {
+                uid: userInfo.openId,
+                skey: skey,
+                session_key: session_key,
+                avatarUrl: userInfo.avatarUrl,
+                nickname: userInfo.nickName,
+                gender: parseFloat(userInfo.gender),
+                province: userInfo.province,
+                city: userInfo.city,
+                country: userInfo.country,
+                province: userInfo.province
+            })
+        }
         ctx.body = {
             code: 0,
-            session: {
-                id: session.id,
-                skey: session.skey
+            data: {
+                userInfo: userInfo,
+                skey: skey
             }
         }
     } catch (e) {

@@ -9,13 +9,22 @@ module.exports = mongoose.model('Member', new Schema({
         type: String,
         default: '0'
     },
+    uid:{
+        type: String
+    },
+    skey:{
+        type: String
+    },
+    session_key:{
+        type: String
+    },
     // 添加时间
     addtime: {
         type: Date,
         default: Date.now
     },
     // 头像
-    img: {
+    avatarUrl: {
         type: String
     },
     // 昵称
@@ -29,23 +38,26 @@ module.exports = mongoose.model('Member', new Schema({
         default: ''
     },
     // 性别 (1: 男， 2：女)
-    sex: {
+    gender: {
         type: Number,
         default: 0
     },
     // 省份
-    provinces: {
+    province: {
         type: String
     },
     // 城市
     city: {
         type: String
     },
+    // 国家
+    country: {
+        type: String
+    },
     // 手机号
     phone: String,
     // 密码
     password: {
-        type: String,
-        require: true
+        type: String
     }
 }));

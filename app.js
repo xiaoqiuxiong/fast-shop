@@ -93,11 +93,13 @@ app.use((ctx, next) => {
 app.use(jwtKoa({
     secret
 }).unless({
-    path: [/^((?!\/api_web).)*$/, '/api_web/login', '/api_web/register']
+    path: [/^((?!\/api_web).)*$/, /^((?!\/api_wx).)*$/, '/api_web/login', '/api_web/wxlogin', '/api_web/register']
 }))
 
 app.use(async (ctx, next) => {
     if (ctx.url.match(/^\/api_web/)) {
+        await next()
+    } else if (ctx.url.match(/^\/api_wx/)) {
         await next()
     } else if (ctx.url.match(/^\/api_admin/)) {
         if (ctx.url.match(/^\/api_admin\/login/) || ctx.url.match(/^\/api_admin\/register/) || ctx.url.match(/^\/api_admin\/logout/)) {
